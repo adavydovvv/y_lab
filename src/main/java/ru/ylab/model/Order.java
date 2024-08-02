@@ -1,7 +1,5 @@
 package ru.ylab.model;
 
-import ru.ylab.utils.OrderStatus;
-
 public class Order {
     private int orderId;
     private User customer;

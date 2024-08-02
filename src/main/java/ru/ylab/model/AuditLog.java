@@ -1,7 +1,5 @@
 package ru.ylab.model;
 
-import ru.ylab.utils.AuditAction;
-
 import java.time.LocalDateTime;
 
 public class AuditLog {

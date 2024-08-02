@@ -1,8 +1,7 @@
 package ru.ylab.model;
 
-import ru.ylab.utils.Role;
-
 public class User {
+    private int userId;
     private String username;
     private String password;
     private String firstName;
@@ -12,21 +11,28 @@ public class User {
     private String email;
     private int number_of_purchases;
 
-    public User(String username, String password, String phone, String email, int number_of_purchases) {
+    public User(int userId, String username, String password, String firstName, String lastName, Role role, String phone, String email, int number_of_purchases) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
         this.phone = phone;
         this.email = email;
         this.number_of_purchases = number_of_purchases;
     }
 
-    public User(String username, String password, Role role, String phone, String email, int number_of_purchases) {
+    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, int number_of_purchases) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phone = phone;
         this.email = email;
         this.number_of_purchases = number_of_purchases;
+        this.role = Role.CLIENT;
     }
 
     public String getUsername() {
@@ -91,5 +97,13 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

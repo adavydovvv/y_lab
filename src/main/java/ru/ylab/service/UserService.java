@@ -1,71 +1,149 @@
 package ru.ylab.service;
 
 import ru.ylab.model.User;
-import ru.ylab.utils.Role;
-
-import java.util.ArrayList;
-import java.util.Comparator;
+import ru.ylab.model.Role;
+import ru.ylab.out.repository.UserRepository;
 import java.util.List;
+
 
 
 public class UserService {
 
-    private List<User> users = new ArrayList<>();
+    private User authorizedUser;
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User getAuthorizedUser() {
+        return authorizedUser;
+    }
 
     public void registerUser(User user) {
-        users.add(user);
+        userRepository.registerUser(user);
     }
 
-    public User loginUser(String username, String password) {
-        for (User user : users) {
+    public void updateUser(User user, String password, String firstName, String lastName, String phone, String email, Role role) {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            userRepository.updateUser(user, password, firstName, lastName, phone, email, role);
+        }
+        else{
+            System.out.println("You cannot change data of users");
+        }
+    }
+
+    public void deleteUser(User user) {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            userRepository.deleteUser(user);
+        }
+        else{
+            System.out.println("You cannot delete users");
+        }
+    }
+
+    public void loginUser(String username, String password) {
+        for (User user : userRepository.getUsers()) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return user;
+                authorizedUser = user;
+                System.out.println("User logged in successfully");
+            }
+            else{
+                System.out.println("Error! Check your username and password");
             }
         }
-        return null;
+
     }
 
-    public List<User> getUsers(User user) {
-        if (user.getRole() == Role.ADMIN){
-            return users;
-        }
-        else {
-            System.out.println("You dont have the right to access this function");
+    public void logoutUser() {
+        authorizedUser = null;
+    }
+
+    public List<User> getUsers() {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.getUsers();
+        } else if (authorizedUser.getRole() == Role.MANAGER) {
+            return userRepository.getClients();
+        } else {
+            System.out.println("You don't have the right to access this function");
             return null;
         }
     }
+    
 
-    public List<User> getUsersSortedByName(User user) {
-        if (user.getRole() == Role.ADMIN) {
-            return users.stream()
-                    .sorted(Comparator.comparing(User::getFirstName))
-                    .toList();
+    public List<User> getUsersSortedByFirstName() {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.getUsersSortedByFirstName();
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+    public List<User> getUsersSortedByLastName() {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.getUsersSortedByLastName();
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public List<User> getUsersSortedByEmail(User user) {
-        if (user.getRole() == Role.ADMIN) {
-            return users.stream()
-                    .sorted(Comparator.comparing(User::getEmail))
-                    .toList();
+    public List<User> getUsersSortedByEmail() {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.getUsersSortedByEmail();
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public List<User> getUsersSortedByPurchasesCount(User user) {
-        if (user.getRole() == Role.ADMIN) {
-            return users.stream()
-                    .sorted(Comparator.comparing(User::getNumber_of_purchases))
-                    .toList();
+    public List<User> getUsersSortedByPurchasesCount() {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.getUsersSortedByPurchasesCount();
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
+    }
+
+    public List<User> filterUsersByFirstName(String firstname) {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.filterUsersByFirstName(firstname);
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+
+    public List<User> filterUsersByLastName(String lastname) {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.filterUsersByLastName(lastname);
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+
+    public List<User> filterUsersByEmail(String email) {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.filterUsersByEmail(email);
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+
+    public List<User> filterUsersByPurchasesCount(int number_of_purchases) {
+        if (authorizedUser.getRole() == Role.ADMIN) {
+            return userRepository.filterUsersByPurchasesCount(number_of_purchases);
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+
+    public int getLastUserId(User user) {
+        return userRepository.getLastUserId(user);
     }
 
 }

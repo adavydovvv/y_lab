@@ -1,4 +1,4 @@
-package ru.ylab.utils;
+package ru.ylab.model;
 
 public enum Role {
     ADMIN,
