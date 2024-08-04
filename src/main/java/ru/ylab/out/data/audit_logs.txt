@@ -1,0 +1,7 @@
+AuditLog{timestamp=2024-08-04T20:38:35.933523700, user=ru.ylab.model.User@6576fe71, action='User logged in'}
+AuditLog{timestamp=2024-08-04T21:02:55.142156800, user=ru.ylab.model.User@6576fe71, action='User logged in'}
+AuditLog{timestamp=2024-08-04T21:03:06.160398300, user=ru.ylab.model.User@6576fe71, action='Filtered cars by brand: Nissan'}
+AuditLog{timestamp=2024-08-04T21:37:09.307979800, user=ru.ylab.model.User@6576fe71, action='User logged in'}
+AuditLog{timestamp=2024-08-04T21:37:40.537342200, user=ru.ylab.model.User@6576fe71, action='User logged in'}
+AuditLog{timestamp=2024-08-04T21:38:19.850798500, user=null, action='Logged out'}
+AuditLog{timestamp=2024-08-04T21:38:26.261984100, user=null, action='Failed login attempt'}
