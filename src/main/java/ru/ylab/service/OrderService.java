@@ -59,6 +59,7 @@ public class OrderService {
         }
     }
 
+
     public void deleteOrder(Order order) {
         if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
             orderRepository.deleteOrder(order);

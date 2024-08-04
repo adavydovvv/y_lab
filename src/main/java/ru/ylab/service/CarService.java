@@ -66,6 +66,7 @@ public class CarService {
         }
     }
 
+
     public List<String> filterCarsByBrand(String brand) {
         if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
             List<String> carNames = new ArrayList<>();

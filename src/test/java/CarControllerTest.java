@@ -52,6 +52,7 @@ class CarControllerTest {
         assertThat(carController.getCarsForTests()).doesNotContain(car);
     }
 
+
     @Test
     void testEditACarPrice() {
         carController.updateCarPrice(carController.getCarById(2), 40000);

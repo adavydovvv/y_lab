@@ -32,6 +32,7 @@ public class CarRepository {
 
     }
 
+
     public List<Car> filterCarsByModel(String model) {
         return cars.stream()
                 .filter(cars -> cars.getBrand().equals(model))

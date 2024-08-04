@@ -21,6 +21,7 @@ public class AuditLog {
         return user;
     }
 
+
     public String getAction() {
         return action;
     }

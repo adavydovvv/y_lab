@@ -51,6 +51,7 @@ public class OrderRepository {
                 .toList();
     }
 
+
     public List<Order> filterOrdersByDate(LocalDate date) {
         return orders.stream()
                 .filter(order -> order.getDate().equals(date))

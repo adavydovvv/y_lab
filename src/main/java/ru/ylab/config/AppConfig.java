@@ -22,4 +22,5 @@ public class AppConfig {
     public void setAuthorizedUser(User authorizedUser) {
         this.authorizedUser = authorizedUser;
     }
+
 }

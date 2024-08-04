@@ -18,6 +18,7 @@ public class InMemoryDatabase {
         users.add(user1);
         users.add(user2);
 
+
         Car car = new Car(1,"Nissan","Teana", 2006, 900000, "Beige", "Very Good", 2, 180, 2.4, "Petrol");
         Car car2 = new Car(2,"BMW","M8", 2024, 9999999, "Beige", "Good", 2, 180, 2.4, "Diesel");
         cars.add(car);

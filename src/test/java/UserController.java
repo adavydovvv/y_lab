@@ -50,6 +50,7 @@ class UserControllerTest {
         assertThat(userController.getUsersForTests()).doesNotContain(user);
     }
 
+
     @Test
     void testGetUserByUsername() {
         User result = userController.getUserByUsername("admin");

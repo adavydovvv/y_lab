@@ -25,6 +25,7 @@ public class AuditController {
         return auditService.filterLogsByUser(username);
     }
 
+
     public List<AuditLog> filterLogsByAction(String action) {
         return auditService.filterLogsByAction(action);
     }

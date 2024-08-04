@@ -33,6 +33,7 @@ public class User {
         this.role = Role.CLIENT;
     }
 
+
     public String getUsername() {
         return username;
     }

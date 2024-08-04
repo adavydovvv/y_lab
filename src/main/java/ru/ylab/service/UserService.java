@@ -49,6 +49,7 @@ public class UserService{
         }
     }
 
+
     public void loginUser(String username, String password) {
         boolean userFound = false;
         for (User user : userRepository.getUsers()) {
