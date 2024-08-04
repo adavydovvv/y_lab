@@ -1,6 +1,7 @@
 package ru.ylab.in.controller;
 
 import ru.ylab.model.Car;
+import ru.ylab.model.Role;
 import ru.ylab.service.CarService;
 
 import java.util.List;
@@ -17,19 +18,19 @@ public class CarController {
         carService.addCar(car);
     }
 
-    public void updateCar(Car car, String brand, String model, int year, double price, String color, String condition, int number_of_owners, int horsepower, double engine_capacity, String engine_type){
-        carService.updateCar(car, brand, model, year, price, color, condition, number_of_owners, horsepower, engine_capacity, engine_type);
+    public void updateCarPrice(Car car, int price){
+        carService.updateCarPrice(car, price);
     }
 
     public void removeCar(Car car) {
         carService.removeCar(car);
     }
 
-    public List<Car> getCars() {
+    public List<String> getCars() {
         return carService.getCars();
     }
 
-    public List<Car> filterCarsByBrand(String brand) {
+    public List<String> filterCarsByBrand(String brand) {
         return carService.filterCarsByBrand(brand);
     }
 
@@ -41,7 +42,7 @@ public class CarController {
         return carService.filterCarsByYear(year);
     }
 
-    public List<Car> filterCarsByPrice(double price) {
+    public List<Car> filterCarsByPrice(int price) {
         return carService.filterCarsByPrice(price);
     }
 
@@ -51,5 +52,16 @@ public class CarController {
 
     public List<Car> filterCarsByEngineType(String engine_type) {
         return carService.filterCarsByEngineType(engine_type);
+    }
+
+    public int getLastCarId(){
+        return carService.getLastCarId();
+    }
+
+    public Car getCarById(int id) {
+        return carService.getCarById(id);
+    }
+    public List<Car> getCarsForTests() {
+        return carService.getCarsForTests();
     }
 }

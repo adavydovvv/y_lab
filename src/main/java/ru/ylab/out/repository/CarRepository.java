@@ -1,30 +1,20 @@
 package ru.ylab.out.repository;
 
 import ru.ylab.model.Car;
-import ru.ylab.model.Role;
+import ru.ylab.out.data.InMemoryDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CarRespository {
+public class CarRepository {
 
-    private List<Car> cars = new ArrayList<>();
+    private List<Car> cars = InMemoryDatabase.getInstance().getCars();
 
     public void add(Car car) {
         cars.add(car);
     }
 
-    public void updateCar(Car car, String brand, String model, int year, double price, String color, String condition, int number_of_owners, int horsepower, double engine_capacity, String engine_type){
-        car.setBrand(brand);
-        car.setModel(model);
-        car.setYear(year);
+    public void updateCarPrice(Car car, int price){
         car.setPrice(price);
-        car.setColor(color);
-        car.setCondition(condition);
-        car.setNumber_of_owners(number_of_owners);
-        car.setHorsepower(horsepower);
-        car.setEngine_capacity(engine_capacity);
-        car.setEngine_type(engine_type);
     }
 
     public void removeCar(Car car) {
@@ -56,7 +46,7 @@ public class CarRespository {
 
     }
 
-    public List<Car> filterCarsByPrice(double price) {
+    public List<Car> filterCarsByPrice(int price) {
         return cars.stream()
                 .filter(cars -> cars.getPrice() == price)
                 .toList();
@@ -74,5 +64,19 @@ public class CarRespository {
                 .filter(cars -> cars.getEngine_type().equals(engine_type))
                 .toList();
     }
+
+    public int getLastCarId(){
+        return cars.size();
+    }
+
+    public Car getCarById(int id) {
+        for (Car car : cars) {
+            if (car.getId() == id) {
+                return car;
+            }
+        }
+        return null;
+    }
+
 }
 

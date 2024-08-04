@@ -1,15 +1,18 @@
 package ru.ylab.service;
 
+import ru.ylab.config.AppConfig;
 import ru.ylab.model.User;
 import ru.ylab.model.Role;
 import ru.ylab.out.repository.UserRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class UserService {
+public class UserService{
 
-    private User authorizedUser;
+    AppConfig appConfig = AppConfig.getInstance();
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -17,24 +20,28 @@ public class UserService {
     }
 
     public User getAuthorizedUser() {
-        return authorizedUser;
+        return appConfig.getAuthorizedUser();
     }
 
     public void registerUser(User user) {
         userRepository.registerUser(user);
     }
 
-    public void updateUser(User user, String password, String firstName, String lastName, String phone, String email, Role role) {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            userRepository.updateUser(user, password, firstName, lastName, phone, email, role);
+    public void updateUserRole(User user, Role role) {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            userRepository.updateUserRole(user, role);
         }
         else{
             System.out.println("You cannot change data of users");
         }
     }
 
+    public void updateUserPassword(User user, String password) {
+        userRepository.updateUserPassword(user, password);
+    }
+
     public void deleteUser(User user) {
-        if (authorizedUser.getRole() == Role.ADMIN) {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
             userRepository.deleteUser(user);
         }
         else{
@@ -43,107 +50,164 @@ public class UserService {
     }
 
     public void loginUser(String username, String password) {
+        boolean userFound = false;
         for (User user : userRepository.getUsers()) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                authorizedUser = user;
+                appConfig.setAuthorizedUser(user);
                 System.out.println("User logged in successfully");
-            }
-            else{
-                System.out.println("Error! Check your username and password");
+                userFound = true;
+                break;
             }
         }
-
+        if (!userFound) {
+            System.out.println("Error! Check your username and password");
+        }
     }
+
 
     public void logoutUser() {
-        authorizedUser = null;
+        appConfig.setAuthorizedUser(null);
     }
 
-    public List<User> getUsers() {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.getUsers();
-        } else if (authorizedUser.getRole() == Role.MANAGER) {
-            return userRepository.getClients();
+    public List<String> getUsers() {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.getUsers()) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
+        } else if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
+            List<String> userNamesClients = new ArrayList<>();
+            for (User user : userRepository.getClients()) {
+                userNamesClients.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNamesClients;
         } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+
+    public List<User> getUsersForTests() {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            return userRepository.getUsers();
+        }  else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
     
 
-    public List<User> getUsersSortedByFirstName() {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.getUsersSortedByFirstName();
+    public List<String> getUsersSortedByFirstName() {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.getUsersSortedByFirstName()) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
-    public List<User> getUsersSortedByLastName() {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.getUsersSortedByLastName();
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
-    }
-
-    public List<User> getUsersSortedByEmail() {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.getUsersSortedByEmail();
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
-    }
-
-    public List<User> getUsersSortedByPurchasesCount() {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.getUsersSortedByPurchasesCount();
+    public List<String> getUsersSortedByLastName() {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.getUsersSortedByLastName()) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public List<User> filterUsersByFirstName(String firstname) {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.filterUsersByFirstName(firstname);
+    public List<String> getUsersSortedByEmail() {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.getUsersSortedByEmail()) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public List<User> filterUsersByLastName(String lastname) {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.filterUsersByLastName(lastname);
+    public List<String> getUsersSortedByPurchasesCount() {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.getUsersSortedByPurchasesCount()) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public List<User> filterUsersByEmail(String email) {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.filterUsersByEmail(email);
+    public List<String> filterUsersByFirstName(String firstname) {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.filterUsersByFirstName(firstname)) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public List<User> filterUsersByPurchasesCount(int number_of_purchases) {
-        if (authorizedUser.getRole() == Role.ADMIN) {
-            return userRepository.filterUsersByPurchasesCount(number_of_purchases);
+    public List<String> filterUsersByLastName(String lastname) {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.filterUsersByLastName(lastname)) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
         } else {
             System.out.println("You don't have the right to access this function");
             return null;
         }
     }
 
-    public int getLastUserId(User user) {
-        return userRepository.getLastUserId(user);
+    public List<String> filterUsersByEmail(String email) {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.filterUsersByEmail(email)) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
     }
+
+    public List<String> filterUsersByPurchasesCount(int number_of_purchases) {
+        if (appConfig.getAuthorizedUser().getRole() == Role.ADMIN) {
+            List<String> userNames = new ArrayList<>();
+            for (User user : userRepository.filterUsersByPurchasesCount(number_of_purchases)) {
+                userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
+            }
+            return userNames;
+        } else {
+            System.out.println("You don't have the right to access this function");
+            return null;
+        }
+    }
+
+    public int getLastUserId() {
+        return userRepository.getLastUserId();
+    }
+
+    public User getUserByUsername(String username){
+        return userRepository.getUserByUsername(username);
+    }
+
 
 }

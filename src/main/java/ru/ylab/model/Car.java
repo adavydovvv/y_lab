@@ -1,18 +1,21 @@
 package ru.ylab.model;
 
 public class Car {
+    private int id;
     private String brand;
     private String model;
     private int year;
-    private double price;
+    private int price;
     private String color;
     private String condition;
     private int number_of_owners;
     private int horsepower;
     private double engine_capacity;
     private String engine_type;
+    private boolean car_available;
 
-    public Car(String brand, String model, int year, double price, String color, String condition, int number_of_owners, int horsepower, double engine_capacity, String engine_type) {
+    public Car(int id, String brand, String model, int year, int price, String color, String condition, int number_of_owners, int horsepower, double engine_capacity, String engine_type) {
+        this.id = id;
         this.brand = brand;
         this.model = model;
         this.year = year;
@@ -23,6 +26,8 @@ public class Car {
         this.horsepower = horsepower;
         this.engine_capacity = engine_capacity;
         this.engine_type = engine_type;
+
+        setCar_available(true);
     }
 
     public String getBrand() {
@@ -53,7 +58,7 @@ public class Car {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -103,5 +108,21 @@ public class Car {
 
     public void setEngine_type(String engine_type) {
         this.engine_type = engine_type;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isCar_available() {
+        return car_available;
+    }
+
+    public void setCar_available(boolean car_available) {
+        this.car_available = car_available;
     }
 }

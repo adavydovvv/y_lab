@@ -1,16 +1,33 @@
 package ru.ylab.model;
 
+import java.time.LocalDate;
+
 public class Order {
     private int orderId;
     private User customer;
     private Car car;
     private OrderStatus status;
+    private double price;
+    private LocalDate date;
 
-    public Order(int orderId, User customer, Car car, OrderStatus status) {
+    private String descriptionOfTheService;
+
+    public Order(int orderId, User customer, Car car, OrderStatus status, LocalDate date) {
         this.orderId = orderId;
         this.customer = customer;
         this.car = car;
         this.status = status;
+        this.date = date;
+    }
+
+    public Order(int orderId, User customer, Car car, OrderStatus status, double price, String descriptionOfTheService, LocalDate date) {
+        this.orderId = orderId;
+        this.customer = customer;
+        this.car = car;
+        this.status = status;
+        this.price = price;
+        this.descriptionOfTheService = descriptionOfTheService;
+        this.date = date;
     }
 
     public int getOrderId() {
@@ -43,5 +60,29 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDescriptionOfTheService() {
+        return descriptionOfTheService;
+    }
+
+    public void setDescriptionOfTheService(String descriptionOfTheService) {
+        this.descriptionOfTheService = descriptionOfTheService;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

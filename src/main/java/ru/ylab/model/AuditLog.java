@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 public class AuditLog {
     private LocalDateTime timestamp;
     private User user;
-    private AuditAction action;
+    private String action;
 
-    public AuditLog(LocalDateTime timestamp, User user, AuditAction action) {
+    public AuditLog(LocalDateTime timestamp, User user, String action) {
         this.timestamp = timestamp;
         this.user = user;
         this.action = action;
@@ -17,23 +17,20 @@ public class AuditLog {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public AuditAction getAction() {
+    public String getAction() {
         return action;
     }
 
-    public void setAction(AuditAction action) {
-        this.action = action;
+    @Override
+    public String toString() {
+        return "AuditLog{" +
+                "timestamp=" + timestamp +
+                ", user=" + user +
+                ", action='" + action + '\'' +
+                '}';
     }
 }

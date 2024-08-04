@@ -13,6 +13,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    public void deleteUser(User user) {
+        userService.deleteUser(user);
+    }
+
     public void registerUser(User user){
         userService.registerUser(user);
     }
@@ -21,51 +25,63 @@ public class UserController {
         userService.loginUser(username, password);
     }
 
-    public void updateUser(User user, String password, String firstName, String lastName, String phone, String email, Role role){
-        userService.updateUser(user, password, firstName, lastName, phone, email, role);
+    public void updateUserPassword(User user, String password){
+        userService.updateUserPassword(user, password);
+    }
+
+    public void updateUserRole(User user, Role role){
+        userService.updateUserRole(user, role);
     }
 
     public void logoutUser(){
         userService.logoutUser();
     }
 
-    public List<User> getUsers(){
+    public List<String> getUsers(){
         return userService.getUsers();
     }
 
-    public List<User> getUsersSortedByFirstName(){
+    public List<String> getUsersSortedByFirstName(){
         return userService.getUsersSortedByFirstName();
     }
 
-    public List<User> getUsersSortedByLastName(){
+    public List<String> getUsersSortedByLastName(){
         return userService.getUsersSortedByLastName();
     }
 
-    public List<User> getUsersSortedByEmail(){
+    public List<String> getUsersSortedByEmail(){
         return userService.getUsersSortedByEmail();
     }
 
-    public List<User> getUsersSortedByPurchasesCount(){
+    public List<String> getUsersSortedByPurchasesCount(){
         return userService.getUsersSortedByPurchasesCount();
     }
 
-    public List<User> filterUsersByFirstName(String firstname){
+    public List<String> filterUsersByFirstName(String firstname){
         return userService.filterUsersByFirstName(firstname);
     }
 
-    public List<User> filterUsersByLastName(String lastname){
+    public List<String> filterUsersByLastName(String lastname){
         return userService.filterUsersByLastName(lastname);
     }
 
-    public List<User> filterUsersByEmail(String email){
+    public List<String> filterUsersByEmail(String email){
         return userService.filterUsersByEmail(email);
     }
 
-    public List<User> filterUsersByPurchasesCount(int purchasesCount){
+    public List<String> filterUsersByPurchasesCount(int purchasesCount){
         return userService.filterUsersByPurchasesCount(purchasesCount);
     }
 
-    public int getLastUserId(User user){
-        return userService.getLastUserId(user);
+    public int getLastUserId(){
+        return userService.getLastUserId();
+    }
+
+    public User getUserByUsername(String username) {
+        return userService.getUserByUsername(username);
+    }
+
+    public List<User> getUsersForTests(){
+        return userService.getUsersForTests();
     }
 }

@@ -11,7 +11,7 @@ public class User {
     private String email;
     private int number_of_purchases;
 
-    public User(int userId, String username, String password, String firstName, String lastName, Role role, String phone, String email, int number_of_purchases) {
+    public User(int userId, String username, String password, String firstName, String lastName, Role role, String phone, String email) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -20,10 +20,9 @@ public class User {
         this.role = role;
         this.phone = phone;
         this.email = email;
-        this.number_of_purchases = number_of_purchases;
     }
 
-    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, int number_of_purchases) {
+    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -31,7 +30,6 @@ public class User {
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
-        this.number_of_purchases = number_of_purchases;
         this.role = Role.CLIENT;
     }
 

@@ -2,32 +2,31 @@ package ru.ylab.out.repository;
 
 import ru.ylab.model.Role;
 import ru.ylab.model.User;
+import ru.ylab.out.data.InMemoryDatabase;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserRepository {
 
-    private List<User> users = new ArrayList<>();
+    private List<User> users = InMemoryDatabase.getInstance().getUsers();
 
     public void registerUser(User user) {
         if (user.getRole() == Role.ADMIN) {
             System.out.println("You can't register admin user");
-        }
-        else{
-            for (User user1 : users) {
-                if (user1.getUsername().equals(user.getUsername())) {
+        } else {
+            for (User existingUser : users) {
+                if (existingUser.getUsername().equals(user.getUsername())) {
                     System.out.println("Username is already in use");
-                }
-                else {
-                    users.add(user);
-                    System.out.println("User added successfully");
+                    return;
                 }
             }
+            users.add(user);
+            System.out.println("User added successfully");
         }
     }
+
 
     public void deleteUser(User user) {
         if (user.getRole() == Role.ADMIN) {
@@ -39,19 +38,21 @@ public class UserRepository {
 
     }
 
-    public void updateUser(User user, String password, String firstName, String lastName, String phone, String email, Role role) {
+    public void updateUserRole(User user, Role role) {
         if (role == Role.ADMIN) {
             System.out.println("Users cannot be assigned as administrators");
         }
         else{
-            user.setPassword(password);
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setPhone(phone);
-            user.setEmail(email);
-
+            user.setRole(role);
             System.out.println("User data has been successfully updated");
         }
+    }
+
+    public void updateUserPassword(User user, String password) {
+        user.setPassword(password);
+
+        System.out.println("User data has been successfully updated");
+
     }
 
     public List<User> getUsers() {
@@ -119,9 +120,19 @@ public class UserRepository {
 
     }
 
-    public int getLastUserId(User user) {
-        return users.toArray().length;
+    public int getLastUserId() {
+        return users.size();
     }
+
+    public User getUserByUsername(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
 }
 
 
