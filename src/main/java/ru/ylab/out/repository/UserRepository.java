@@ -120,7 +120,6 @@ public class UserRepository {
 
     }
 
-
     public int getLastUserId() {
         return users.size();
     }

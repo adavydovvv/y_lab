@@ -8,6 +8,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.audit_logs.txt
 *.iws
 *.iml
 *.ipr

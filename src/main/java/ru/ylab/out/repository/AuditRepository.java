@@ -61,7 +61,7 @@ public class AuditRepository {
 
 
     private void appendLogToFile(String filename, AuditLog auditLog) {
-        String filePath = "C:\\Users\\delja\\Documents\\hw1\\src\\main\\java\\ru\\ylab\\out\\data\\audit_logs.txt";
+        String filePath = "audit_logs.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(auditLog.toString());
             writer.newLine();

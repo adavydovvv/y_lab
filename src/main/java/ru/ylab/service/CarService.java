@@ -1,7 +1,6 @@
 package ru.ylab.service;
 import ru.ylab.config.AppConfig;
 import ru.ylab.model.Car;
-import ru.ylab.model.Role;
 import ru.ylab.out.repository.CarRepository;
 
 import java.util.ArrayList;
@@ -16,113 +15,59 @@ public class CarService {
     }
 
     public void addCar(Car car) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            carRespository.add(car);
-            System.out.println("Car added");
-        }
-        else {
-            System.out.println("You don't have permission to add a car");
-        }
+        carRespository.add(car);
+        System.out.println("Car added");
     }
 
     public void updateCarPrice(Car car, int price) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER){
-            carRespository.updateCarPrice(car, price);
-        }
-        else{
-            System.out.println("You cannot change data of cars");
-        }
+        carRespository.updateCarPrice(car, price);
     }
 
     public void removeCar(Car car) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            carRespository.removeCar(car);
-            System.out.println("Car removed");
-        }
-        else {
-            System.out.println("You don't have permission to remove a car");
-        }
+        carRespository.removeCar(car);
+        System.out.println("Car removed");
     }
 
     public List<String> getCars() {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            List<String> carNames = new ArrayList<>();
-            for (Car car : carRespository.getCars()) {
-                carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
-            }
-            return carNames;
-        } else {
-            System.out.println("You don't have permission to get list of cars");
-            return null;
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.getCars()) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
         }
+        return carNames;
+
     }
 
     public List<Car> getCarsForTests() {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            return carRespository.getCars();
-        } else {
-            System.out.println("You don't have permission to get list of cars");
-            return null;
-        }
+        return carRespository.getCars();
     }
 
 
     public List<String> filterCarsByBrand(String brand) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            List<String> carNames = new ArrayList<>();
-            for (Car car : carRespository.filterCarsByBrand(brand)) {
-                carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
-            }
-            return carNames;
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.filterCarsByBrand(brand)) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
         }
+        return carNames;
     }
 
     public List<Car> filterCarsByModel(String model) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            return carRespository.filterCarsByModel(model);
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
+        return carRespository.filterCarsByModel(model);
     }
 
     public List<Car> filterCarsByYear(int year) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            return carRespository.filterCarsByYear(year);
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
+        return carRespository.filterCarsByYear(year);
     }
 
     public List<Car> filterCarsByPrice(int price) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            return carRespository.filterCarsByPrice(price);
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
+        return carRespository.filterCarsByPrice(price);
     }
 
     public List<Car> filterCarsByCondition(String condition) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            return carRespository.filterCarsByCondition(condition);
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
+        return carRespository.filterCarsByCondition(condition);
     }
 
     public List<Car> filterCarsByEngineType(String engine_type) {
-        if (appConfig.getAuthorizedUser().getRole() == Role.MANAGER) {
-            return carRespository.filterCarsByEngineType(engine_type);
-        } else {
-            System.out.println("You don't have the right to access this function");
-            return null;
-        }
+        return carRespository.filterCarsByEngineType(engine_type);
     }
 
     public int getLastCarId(){

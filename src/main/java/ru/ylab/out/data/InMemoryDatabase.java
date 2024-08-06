@@ -1,7 +1,6 @@
 package ru.ylab.out.data;
 
 import ru.ylab.model.*;
-
 import java.util.ArrayList;
 import java.util.List;
 

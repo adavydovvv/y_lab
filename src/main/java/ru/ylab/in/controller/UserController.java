@@ -17,7 +17,6 @@ public class UserController {
         userService.deleteUser(user);
     }
 
-
     public void registerUser(User user){
         userService.registerUser(user);
     }

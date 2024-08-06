@@ -21,6 +21,17 @@ public class AuditLog {
         return user;
     }
 
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public String getAction() {
         return action;

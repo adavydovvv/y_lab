@@ -1,6 +1,13 @@
 package ru.ylab.config;
 
+import ru.ylab.in.controller.AuditController;
+import ru.ylab.in.controller.CarController;
+import ru.ylab.in.controller.OrderController;
+import ru.ylab.in.controller.UserController;
+import ru.ylab.in.menu.MainMenu;
 import ru.ylab.model.User;
+
+import java.util.Scanner;
 
 public class AppConfig {
     private static AppConfig instance;
@@ -23,4 +30,14 @@ public class AppConfig {
         this.authorizedUser = authorizedUser;
     }
 
+    public static void logout(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException {
+        AppConfig.getInstance().setAuthorizedUser(null);
+        System.out.println("Logged out successfully.");
+        MainMenu.display(scanner, userController, carController, orderController, auditController);
+    }
+    public static void exit(Scanner scanner){
+        System.out.println("Exiting...");
+        scanner.close();
+        System.exit(0);
+    }
 }

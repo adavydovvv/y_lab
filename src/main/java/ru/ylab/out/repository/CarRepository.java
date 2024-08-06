@@ -2,7 +2,6 @@ package ru.ylab.out.repository;
 
 import ru.ylab.model.Car;
 import ru.ylab.out.data.InMemoryDatabase;
-
 import java.util.List;
 
 public class CarRepository {

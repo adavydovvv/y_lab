@@ -30,7 +30,6 @@ public class Car {
         setCar_available(true);
     }
 
-
     public String getBrand() {
         return brand;
     }

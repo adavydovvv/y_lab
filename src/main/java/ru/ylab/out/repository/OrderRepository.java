@@ -2,7 +2,6 @@ package ru.ylab.out.repository;
 
 import ru.ylab.model.*;
 import ru.ylab.out.data.InMemoryDatabase;
-
 import java.time.LocalDate;
 import java.util.List;
 
