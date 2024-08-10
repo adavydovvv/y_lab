@@ -6,6 +6,7 @@ import ru.ylab.model.OrderStatus;
 import ru.ylab.model.User;
 import ru.ylab.service.OrderService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Order order) throws SQLException {
         orderService.addOrder(order);
     }
 

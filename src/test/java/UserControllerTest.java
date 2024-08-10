@@ -1,42 +1,36 @@
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ylab.in.controller.UserController;
 import ru.ylab.model.Role;
 import ru.ylab.model.User;
 import ru.ylab.out.repository.UserRepository;
 import ru.ylab.service.UserService;
 
-class UserControllerTest {
-
-    @Mock
-    private List<User> users;
+@Testcontainers
+public class UserControllerTest extends AbstractIntegrationTest {
 
     @InjectMocks
     private UserController userController;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException {
         MockitoAnnotations.openMocks(this);
-        users = new ArrayList<>();
-        User user1 = new User(1, "admin", "admin", "A", "B", Role.ADMIN, "0", "a@dmin");
-        User user2 = new User(2, "manager", "manager", "B", "A", Role.MANAGER, "0", "a@dmin");
-        users.add(user1);
-        users.add(user2);
         userController = new UserController(new UserService(new UserRepository()));
         userController.loginUser("admin", "admin");
+
+
+        userController.registerUser(new User(1, "admin", "admin", "A", "B", Role.ADMIN, "0", "a@dmin"));
+        userController.registerUser(new User(2, "manager", "manager", "B", "A", Role.MANAGER, "0", "a@dmin"));
     }
 
-
     @Test
-    void testAddUser() {
+    void testAddUser() throws SQLException {
         User user = new User(3, "abc", "cde", "B", "A", Role.CLIENT, "0", "a@dmin");
         userController.registerUser(user);
         assertThat(userController.getUsersForTests()).contains(user);
@@ -44,11 +38,10 @@ class UserControllerTest {
 
     @Test
     void testRemoveUser() {
-        User user = users.get(0);
-        userController.deleteUser(user);
+        User user = userController.getUserByUsername("admin");
+        userController.deleteUser(user.getUsername());
         assertThat(userController.getUsersForTests()).doesNotContain(user);
     }
-
 
     @Test
     void testGetUserByUsername() {
@@ -59,8 +52,8 @@ class UserControllerTest {
 
     @Test
     void testUpdateUserRole() {
-        User user = users.get(0);
-        userController.updateUserRole(user, Role.MANAGER);
+        User user = userController.getUserByUsername("admin");
+        userController.updateUserRole(user.getUsername(), Role.MANAGER);
         assertThat(user.getRole()).isEqualTo(Role.MANAGER);
     }
 }

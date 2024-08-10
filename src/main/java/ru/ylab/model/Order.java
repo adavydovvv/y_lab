@@ -1,5 +1,6 @@
 package ru.ylab.model;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class Order {
@@ -8,11 +9,11 @@ public class Order {
     private Car car;
     private OrderStatus status;
     private double price;
-    private LocalDate date;
+    private Date date;
 
     private String descriptionOfTheService;
 
-    public Order(int orderId, User customer, Car car, OrderStatus status, LocalDate date) {
+    public Order(int orderId, User customer, Car car, OrderStatus status, Date date) {
         this.orderId = orderId;
         this.customer = customer;
         this.car = car;
@@ -20,7 +21,7 @@ public class Order {
         this.date = date;
     }
 
-    public Order(int orderId, User customer, Car car, OrderStatus status, double price, String descriptionOfTheService, LocalDate date) {
+    public Order(int orderId, User customer, Car car, OrderStatus status, double price, String descriptionOfTheService, Date date) {
         this.orderId = orderId;
         this.customer = customer;
         this.car = car;
@@ -78,11 +79,11 @@ public class Order {
         this.descriptionOfTheService = descriptionOfTheService;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

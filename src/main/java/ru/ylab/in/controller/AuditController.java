@@ -17,25 +17,5 @@ public class AuditController {
         auditService.logAction(auditLog);
     }
 
-    public List<AuditLog> getAllLogs() {
-        return auditService.getAllLogs();
-    }
-
-    public List<AuditLog> filterLogsByUser(String username) {
-        return auditService.filterLogsByUser(username);
-    }
-
-
-    public List<AuditLog> filterLogsByAction(String action) {
-        return auditService.filterLogsByAction(action);
-    }
-
-    public List<AuditLog> filterLogsByDate(LocalDateTime from, LocalDateTime to) {
-        return auditService.filterLogsByDate(from, to);
-    }
-
-    public void exportLogsToFile(String filename) {
-        auditService.exportLogsToFile(filename);
-    }
 
 }

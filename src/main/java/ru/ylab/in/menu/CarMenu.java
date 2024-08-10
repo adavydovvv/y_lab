@@ -9,11 +9,12 @@ import ru.ylab.in.controller.UserController;
 import ru.ylab.model.AuditLog;
 import ru.ylab.model.Car;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class CarMenu {
-    public static void display(Scanner scanner, CarController carController, AuditController auditController, UserController userController, OrderController orderController) throws InterruptedException {
+    public static void display(Scanner scanner, CarController carController, AuditController auditController, UserController userController, OrderController orderController) throws InterruptedException, SQLException {
 
         System.out.println("""
                 ----- CAR MENU -----

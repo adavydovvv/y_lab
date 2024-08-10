@@ -1,64 +1,31 @@
 package ru.ylab.out.repository;
 
 import ru.ylab.model.AuditLog;
-import ru.ylab.out.repository.AuditRepository;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.sql.*;
 
 public class AuditRepository {
-    private List<AuditLog> auditLogs = new ArrayList<>();
-
 
     public void logAction(AuditLog auditLog) {
-        auditLogs.add(auditLog);
+        String sql = "INSERT INTO carshop.log (id, timestamp, userId, action) " +
+                "VALUES (nextval('public.log_id_seq'), ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setTimestamp(1, Timestamp.valueOf(auditLog.getTimestamp()));
+            stmt.setInt(2, auditLog.getUser().getUserId());
+            stmt.setString(3, auditLog.getAction());
+
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error when adding a log: " + e.getMessage());
+        }
         appendLogToFile("audit_logs.txt", auditLog);
     }
-
-
-    public List<AuditLog> getAllLogs() {
-        return new ArrayList<>(auditLogs);
-    }
-
-
-    public List<AuditLog> filterLogsByUser(String username) {
-        return auditLogs.stream()
-                .filter(log -> log.getUser().getUsername().equals(username))
-                .collect(Collectors.toList());
-    }
-
-
-
-    public List<AuditLog> filterLogsByAction(String action) {
-        return auditLogs.stream()
-                .filter(log -> log.getAction().equals(action))
-                .collect(Collectors.toList());
-    }
-
-
-    public List<AuditLog> filterLogsByDate(LocalDateTime from, LocalDateTime to) {
-        return auditLogs.stream()
-                .filter(log -> log.getTimestamp().isAfter(from) && log.getTimestamp().isBefore(to))
-                .collect(Collectors.toList());
-    }
-
-
-    public void exportLogsToFile(String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            for (AuditLog log : auditLogs) {
-                writer.write(log.toString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private void appendLogToFile(String filename, AuditLog auditLog) {
         String filePath = "audit_logs.txt";

@@ -5,6 +5,7 @@ import ru.ylab.model.User;
 import ru.ylab.model.Role;
 import ru.ylab.out.repository.UserRepository;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,36 +24,26 @@ public class UserService{
         return appConfig.getAuthorizedUser();
     }
 
-    public void registerUser(User user) {
+    public void registerUser(User user) throws SQLException {
         userRepository.registerUser(user);
     }
 
-    public void updateUserRole(User user, Role role) {
-        userRepository.updateUserRole(user, role);
+    public void updateUserRole(String username, Role role) {
+        userRepository.updateUserRole(username, role);
     }
 
     public void updateUserPassword(User user, String password) {
         userRepository.updateUserPassword(user, password);
     }
 
-    public void deleteUser(User user) {
-        userRepository.deleteUser(user);
+    public void deleteUser(String username) {
+        userRepository.deleteUser(username);
     }
 
     public void loginUser(String username, String password) {
-        boolean userFound = false;
-        for (User user : userRepository.getUsers()) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                appConfig.setAuthorizedUser(user);
-                System.out.println("User logged in successfully");
-                userFound = true;
-                break;
-            }
-        }
-        if (!userFound) {
-            System.out.println("Error! Check your username and password");
-        }
+       userRepository.loginUser(username, password);
     }
+
 
     public void logoutUser() {
         appConfig.setAuthorizedUser(null);
@@ -147,6 +138,10 @@ public class UserService{
 
     public User getUserByUsername(String username){
         return userRepository.getUserByUsername(username);
+    }
+
+    public void updateUserPurchasesCount(User user) {
+        userRepository.updateUserPurchasesCount(user);
     }
 
 

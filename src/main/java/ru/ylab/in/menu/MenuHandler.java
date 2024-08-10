@@ -7,10 +7,11 @@ import ru.ylab.in.controller.UserController;
 import ru.ylab.model.User;
 import ru.ylab.security.SecurityManager;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class MenuHandler {
-    public static void display(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController, User user) throws InterruptedException {
+    public static void display(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController, User user) throws InterruptedException, SQLException {
         while (true) {
             System.out.println("=========== MAIN MENU ===========");
 

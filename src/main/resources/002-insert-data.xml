@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="2" author="adavydovvv">
+        <insert tableName="users" schemaName="carshop">
+            <column name="id" value="3"/>
+            <column name="username" value="admin"/>
+            <column name="password" value="admin"/>
+            <column name="first_name" value="Admin"/>
+            <column name="last_name" value="One"/>
+            <column name="phone_number" value="+79000000000"/>
+            <column name="email" value="ad@min.ru"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <insert tableName="users" schemaName="carshop">
+            <column name="id" value="4"/>
+            <column name="username" value="manager"/>
+            <column name="password" value="manager"/>
+            <column name="first_name" value="Manager"/>
+            <column name="last_name" value="One"/>
+            <column name="phone_number" value="+79000000001"/>
+            <column name="email" value="mana@ger.ru"/>
+            <column name="role" value="MANAGER"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

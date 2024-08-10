@@ -3,6 +3,7 @@ package ru.ylab.model;
 import java.time.LocalDateTime;
 
 public class AuditLog {
+
     private LocalDateTime timestamp;
     private User user;
     private String action;

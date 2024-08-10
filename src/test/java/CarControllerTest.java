@@ -1,13 +1,10 @@
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.ylab.in.controller.CarController;
 import ru.ylab.in.controller.UserController;
 import ru.ylab.model.Car;
@@ -16,10 +13,8 @@ import ru.ylab.out.repository.UserRepository;
 import ru.ylab.service.CarService;
 import ru.ylab.service.UserService;
 
-class CarControllerTest {
-
-    @Mock
-    private List<Car> cars;
+@Testcontainers
+class CarControllerTest extends AbstractIntegrationTest {
 
     @InjectMocks
     private CarController carController;
@@ -28,14 +23,13 @@ class CarControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        cars = new ArrayList<>();
-        cars.add(new Car(1, "Toyota", "Camry", 2021, 30000, "White", "New", 1, 250, 2.5, "Gasoline"));
-        cars.add(new Car(2, "Honda", "Accord", 2020, 28000, "Black", "New", 1, 240, 2.0, "Gasoline"));
         carController = new CarController(new CarService(new CarRepository()));
         userController = new UserController(new UserService(new UserRepository()));
         userController.loginUser("manager", "manager");
-    }
 
+        carController.addCar(new Car(1, "Toyota", "Camry", 2021, 30000, "White", "New", 1, 250, 2.5, "Gasoline"));
+        carController.addCar(new Car(2, "Honda", "Accord", 2020, 28000, "Black", "New", 1, 240, 2.0, "Gasoline"));
+    }
 
     @Test
     void testAddCar() {
@@ -46,11 +40,10 @@ class CarControllerTest {
 
     @Test
     void testRemoveCar() {
-        Car car = cars.get(0);
+        Car car = carController.getCarById(1);
         carController.removeCar(car);
         assertThat(carController.getCarsForTests()).doesNotContain(car);
     }
-
 
     @Test
     void testEditACarPrice() {

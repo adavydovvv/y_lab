@@ -4,6 +4,7 @@ import ru.ylab.config.AppConfig;
 import ru.ylab.model.*;
 import ru.ylab.out.repository.OrderRepository;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Order order) throws SQLException {
         orderRepository.addOrder(order);
         System.out.println("Order added");
 
@@ -44,6 +45,7 @@ public class OrderService {
 
     public void deleteOrder(Order order) {
         orderRepository.deleteOrder(order);
+        System.out.println("Order deleted");
     }
 
     public Order getOrderById(int id) {

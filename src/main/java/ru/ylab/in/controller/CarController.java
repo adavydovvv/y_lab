@@ -55,6 +55,10 @@ public class CarController {
         return carService.filterCarsByEngineType(engine_type);
     }
 
+    public void updateCarIsAvailable(Car car, boolean isAvailable){
+        carService.updateCarIsAvailable(car, isAvailable);
+    }
+
     public int getLastCarId(){
         return carService.getLastCarId();
     }

@@ -8,28 +8,28 @@ import ru.ylab.in.controller.UserController;
 import ru.ylab.model.AuditLog;
 import ru.ylab.model.Role;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class UserMenu {
-    public static void display(Scanner scanner, UserController userController, AuditController auditController, CarController carController, OrderController orderController) throws InterruptedException {
+    public static void display(Scanner scanner, UserController userController, AuditController auditController, CarController carController, OrderController orderController) throws InterruptedException, SQLException {
 
         System.out.println("""
                 ----- USER MENU -----
                 1. Delete a user
                 2. Change user role
-                3. Change user password
-                4. Get all users
-                5. Get users sorted by First name
-                6. Get users sorted by Last name
-                7. Get users sorted by Email
-                8. Get users sorted by Purchases count
-                9. Get users filtered by First name
-                10. Get users filtered by Last name
-                11. Get users filtered by Email
-                12. Get users filtered by Purchases count
-                13. Logout
-                14. Exit
+                3. Get all users
+                4. Get users sorted by First name
+                5. Get users sorted by Last name
+                6. Get users sorted by Email
+                7. Get users sorted by Purchases count
+                8. Get users filtered by First name
+                9. Get users filtered by Last name
+                10. Get users filtered by Email
+                11. Get users filtered by Purchases count
+                12. Logout
+                13. Exit
                 """);
 
         int action = scanner.nextInt();
@@ -38,18 +38,17 @@ public class UserMenu {
         switch (action) {
             case 1 -> deleteUser(scanner, userController, auditController);
             case 2 -> changeRole(scanner, userController, auditController);
-            case 3 -> changeUserPassword(scanner, userController, auditController);
-            case 4 -> getAllUsers(scanner, userController, auditController);
-            case 5 -> getUsersSortedByFirstName(scanner, userController, auditController);
-            case 6 -> getUsersSortedByLastName(scanner, userController, auditController);
-            case 7 -> getUsersSortedByEmail(scanner, userController, auditController);
-            case 8 -> getUsersSortedByPurchaseCount(scanner, userController, auditController);
-            case 9 -> getUsersFilteredByFirstName(scanner, userController, auditController);
-            case 10 -> getUsersFilteredByLastName(scanner, userController, auditController);
-            case 11 -> getUsersFilteredByEmail(scanner, userController, auditController);
-            case 12 -> getUsersFilteredByPurchasesCount(scanner, userController, auditController);
-            case 13 -> AppConfig.logout(scanner, userController, carController, orderController, auditController);
-            case 14-> AppConfig.exit(scanner);
+            case 3 -> getAllUsers(scanner, userController, auditController);
+            case 4 -> getUsersSortedByFirstName(scanner, userController, auditController);
+            case 5 -> getUsersSortedByLastName(scanner, userController, auditController);
+            case 6 -> getUsersSortedByEmail(scanner, userController, auditController);
+            case 7 -> getUsersSortedByPurchaseCount(scanner, userController, auditController);
+            case 8 -> getUsersFilteredByFirstName(scanner, userController, auditController);
+            case 9 -> getUsersFilteredByLastName(scanner, userController, auditController);
+            case 10 -> getUsersFilteredByEmail(scanner, userController, auditController);
+            case 11 -> getUsersFilteredByPurchasesCount(scanner, userController, auditController);
+            case 12 -> AppConfig.logout(scanner, userController, carController, orderController, auditController);
+            case 13-> AppConfig.exit(scanner);
             default -> System.out.println("Invalid action. Please try again.");
         }
     }
@@ -57,9 +56,17 @@ public class UserMenu {
     private static void deleteUser(Scanner scanner, UserController userController, AuditController auditController) throws InterruptedException {
         System.out.println("Enter user username:");
         String username_fordelete = scanner.nextLine();
-        userController.deleteUser(userController.getUserByUsername(username_fordelete));
+        userController.deleteUser(username_fordelete);
         auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Deleted user: " + username_fordelete));
         Thread.sleep(2000);
+    }
+
+    static void changeUserPassword(Scanner scanner, UserController userController, AuditController auditController) throws InterruptedException {
+        System.out.println("Enter new password:");
+        String password = scanner.nextLine();
+        userController.updateUserPassword(AppConfig.getInstance().getAuthorizedUser(), password);
+        auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Changed password for username: " + AppConfig.getInstance().getAuthorizedUser().getUsername()));
+        Thread.sleep(3000);
     }
 
     private static void changeRole(Scanner scanner, UserController userController, AuditController auditController) throws InterruptedException {
@@ -71,26 +78,18 @@ public class UserMenu {
         int action5 = scanner.nextInt();
         switch (action5) {
             case 1:
-                userController.updateUserRole(userController.getUserByUsername(username), Role.CLIENT);
+                userController.updateUserRole(username, Role.CLIENT);
                 auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Changed user role to CLIENT for username: " + username));
                 Thread.sleep(3000);
                 break;
             case 2:
-                userController.updateUserRole(userController.getUserByUsername(username), Role.MANAGER);
+                userController.updateUserRole(username, Role.MANAGER);
                 auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Changed user role to MANAGER for username: " + username));
                 Thread.sleep(3000);
                 break;
             default:
                 System.out.println("Invalid action. Please try again.");
         }
-    }
-
-    private static void changeUserPassword(Scanner scanner, UserController userController, AuditController auditController) throws InterruptedException {
-        System.out.println("Enter new password:");
-        String password = scanner.nextLine();
-        userController.updateUserPassword(AppConfig.getInstance().getAuthorizedUser(), password);
-        auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Changed password for username: " + AppConfig.getInstance().getAuthorizedUser().getUsername()));
-        Thread.sleep(3000);
     }
 
     private static void getAllUsers(Scanner scanner, UserController userController, AuditController auditController) throws InterruptedException {

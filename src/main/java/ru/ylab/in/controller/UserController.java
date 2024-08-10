@@ -4,6 +4,7 @@ import ru.ylab.model.Role;
 import ru.ylab.model.User;
 import ru.ylab.service.UserService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserController {
@@ -13,11 +14,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    public void deleteUser(User user) {
-        userService.deleteUser(user);
+    public void deleteUser(String username) {
+        userService.deleteUser(username);
     }
 
-    public void registerUser(User user){
+    public void updateUserPurchasesCount(User user) {
+        userService.updateUserPurchasesCount(user);
+    }
+
+    public void registerUser(User user) throws SQLException {
         userService.registerUser(user);
     }
 
@@ -29,8 +34,8 @@ public class UserController {
         userService.updateUserPassword(user, password);
     }
 
-    public void updateUserRole(User user, Role role){
-        userService.updateUserRole(user, role);
+    public void updateUserRole(String username, Role role){
+        userService.updateUserRole(username, role);
     }
 
     public void logoutUser(){

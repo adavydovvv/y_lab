@@ -5,7 +5,6 @@ import ru.ylab.model.User;
 
 
 public class SecurityManager {
-
     public static boolean hasAccessToCarAndOrderMenu(User user) {
         if (user.getRole() == Role.MANAGER){
             return true;
@@ -26,5 +25,4 @@ public class SecurityManager {
         }
         return false;
     }
-
 }

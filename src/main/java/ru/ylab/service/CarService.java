@@ -69,6 +69,9 @@ public class CarService {
     public List<Car> filterCarsByEngineType(String engine_type) {
         return carRespository.filterCarsByEngineType(engine_type);
     }
+    public void updateCarIsAvailable(Car car, boolean isAvailable){
+        carRespository.updateCarIsAvailable(car, isAvailable);
+    }
 
     public int getLastCarId(){
         return carRespository.getLastCarId();

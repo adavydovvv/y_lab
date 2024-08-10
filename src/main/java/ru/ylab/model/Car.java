@@ -30,6 +30,21 @@ public class Car {
         setCar_available(true);
     }
 
+    public Car(int id, String brand, String model, int year, int price, String color, String condition, int number_of_owners, int horsepower, double engine_capacity, String engine_type, boolean isCar_available) {
+        this.id = id;
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.price = price;
+        this.color = color;
+        this.condition = condition;
+        this.number_of_owners = number_of_owners;
+        this.horsepower = horsepower;
+        this.engine_capacity = engine_capacity;
+        this.engine_type = engine_type;
+        this.car_available = isCar_available;
+    }
+
     public String getBrand() {
         return brand;
     }
@@ -54,7 +69,7 @@ public class Car {
         this.year = year;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 

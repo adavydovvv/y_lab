@@ -14,10 +14,11 @@ import ru.ylab.service.CarService;
 import ru.ylab.service.OrderService;
 import ru.ylab.service.UserService;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class MainDisplay {
-    public static void display () throws InterruptedException {
+    public static void display () throws InterruptedException, SQLException {
         AppConfig appConfig = AppConfig.getInstance();
 
         UserRepository userRepository = new UserRepository();

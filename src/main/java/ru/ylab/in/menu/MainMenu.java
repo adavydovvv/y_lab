@@ -7,10 +7,11 @@ import ru.ylab.in.controller.OrderController;
 import ru.ylab.in.controller.UserController;
 import ru.ylab.model.User;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class MainMenu {
-    public static void display(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException {
+    public static void display(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException, SQLException {
         System.out.println("=========== WELCOME TO CAR SHOP ===========");
         System.out.println("--- log in to your account ---");
 
@@ -37,7 +38,7 @@ public class MainMenu {
         }
     }
 
-    private static void signIn(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException {
+    private static void signIn(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException, SQLException {
         System.out.println("Enter username: ");
         String username = scanner.nextLine();
         System.out.println("Enter password: ");
@@ -51,7 +52,7 @@ public class MainMenu {
         }
     }
 
-    private static void signUp(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException {
+    private static void signUp(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException, SQLException {
         System.out.println("Enter username: ");
         String newUsername = scanner.nextLine();
         System.out.println("Enter password: ");
@@ -67,14 +68,14 @@ public class MainMenu {
 
         User user = new User(userController.getLastUserId() + 1, newUsername, newPassword, firstName, lastName, phoneNumber, email);
         userController.registerUser(user);
-
         userController.loginUser(newUsername, newPassword);
+
 
         User loggedInUser = AppConfig.getInstance().getAuthorizedUser();
         if (loggedInUser != null) {
             MenuHandler.display(scanner, userController, carController, orderController, auditController, loggedInUser);
         } else {
-            System.out.println("Registration failed. Try again.");
+            System.out.println("Unexpected error.");
         }
     }
 }

@@ -9,13 +9,15 @@ import ru.ylab.model.AuditLog;
 import ru.ylab.model.Order;
 import ru.ylab.model.OrderStatus;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class OrderMenu {
-    public static void display(Scanner scanner, UserController userController, AuditController auditController, CarController carController, OrderController orderController) throws InterruptedException {
+    public static void display(Scanner scanner, UserController userController, AuditController auditController, CarController carController, OrderController orderController) throws InterruptedException, SQLException {
 
         System.out.println("""
                 ----- ORDER MENU -----
@@ -35,7 +37,7 @@ public class OrderMenu {
         scanner.nextLine();
 
         switch (action) {
-            case 1 -> createOrder(scanner, carController, orderController, auditController);
+            case 1 -> createOrder(scanner, carController, orderController, auditController, userController);
             case 2 -> changeOrderStatus(scanner, orderController, auditController);
             case 3 -> viewAllOrders(scanner, orderController, auditController);
             case 4 -> deleteOrder(scanner, orderController, auditController);
@@ -51,7 +53,7 @@ public class OrderMenu {
 
 
 
-    public static void createOrder(Scanner scanner, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException {
+    public static void createOrder(Scanner scanner, CarController carController, OrderController orderController, AuditController auditController, UserController userController) throws InterruptedException, SQLException {
         System.out.println("1. Order a service");
         System.out.println("2. Order a car");
         int action2 = scanner.nextInt();
@@ -66,9 +68,10 @@ public class OrderMenu {
                     System.out.println("Enter the description of service: ");
                     scanner.nextLine();
                     String descriptionToOrder = scanner.nextLine();
-                    Order order = new Order(orderController.getLastOrderId() + 1, AppConfig.getInstance().getAuthorizedUser(), carController.getCarById(carIdToOrder), OrderStatus.PENDING, priceToOrder, descriptionToOrder, LocalDate.now());
-                    carController.getCarById(carIdToOrder).setCar_available(false);
+                    Order order = new Order(orderController.getLastOrderId() + 1, AppConfig.getInstance().getAuthorizedUser(), carController.getCarById(carIdToOrder), OrderStatus.PENDING, priceToOrder, descriptionToOrder, Date.valueOf(LocalDate.now()));
+                    carController.updateCarIsAvailable(carController.getCarById(carIdToOrder), false);
                     AppConfig.getInstance().getAuthorizedUser().setNumber_of_purchases(AppConfig.getInstance().getAuthorizedUser().getNumber_of_purchases() + 1);
+
                     orderController.addOrder(order);
                     auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Ordered a service for car ID: " + carIdToOrder));
                     Thread.sleep(5000);
@@ -76,15 +79,15 @@ public class OrderMenu {
                     System.out.println("This car is not available");
                 }
                 break;
-
             case 2:
                 System.out.println("Enter car id: ");
                 int carId = scanner.nextInt();
                 scanner.nextLine();
                 if (carController.getCarById(carId).isCar_available()) {
-                    Order order2 = new Order(orderController.getLastOrderId() + 1, AppConfig.getInstance().getAuthorizedUser(), carController.getCarById(carId), OrderStatus.PENDING, LocalDate.now());
+                    Order order2 = new Order(orderController.getLastOrderId() + 1, AppConfig.getInstance().getAuthorizedUser(), carController.getCarById(carId), OrderStatus.PENDING, Date.valueOf(LocalDate.now()));
                     AppConfig.getInstance().getAuthorizedUser().setNumber_of_purchases(AppConfig.getInstance().getAuthorizedUser().getNumber_of_purchases() + 1);
-                    carController.getCarById(carId).setCar_available(false);
+                    userController.updateUserPurchasesCount(AppConfig.getInstance().getAuthorizedUser());
+                    carController.updateCarIsAvailable(carController.getCarById(carId), false);
                     orderController.addOrder(order2);
                     auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Ordered a car with ID: " + carId));
                     Thread.sleep(5000);
