@@ -15,5 +15,4 @@ public class AuditService {
         auditRepository.logAction(auditLog);
     }
 
-
 }

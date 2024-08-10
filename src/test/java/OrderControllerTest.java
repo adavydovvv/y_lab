@@ -21,7 +21,6 @@ import ru.ylab.service.UserService;
 
 @Testcontainers
 public class OrderControllerTest extends AbstractIntegrationTest {
-
     @InjectMocks
     private OrderController orderController;
     private UserController userController;

@@ -21,7 +21,6 @@ public class UserController {
     public void updateUserPurchasesCount(User user) {
         userService.updateUserPurchasesCount(user);
     }
-
     public void registerUser(User user) throws SQLException {
         userService.registerUser(user);
     }

@@ -28,5 +28,6 @@
             <column name="role" value="MANAGER"/>
         </insert>
 
+
     </changeSet>
 </databaseChangeLog>

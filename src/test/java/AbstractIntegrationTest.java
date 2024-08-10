@@ -17,6 +17,7 @@ public abstract class AbstractIntegrationTest {
         System.setProperty("ylab", postgresContainer.getPassword());
     }
 
+
     @AfterAll
     public static void stopContainer() {
         postgresContainer.stop();

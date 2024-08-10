@@ -21,7 +21,6 @@ public class CarController {
     public void updateCarPrice(Car car, int price){
         carService.updateCarPrice(car, price);
     }
-
     public void removeCar(Car car) {
         carService.removeCar(car);
     }

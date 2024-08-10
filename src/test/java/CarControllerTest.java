@@ -15,7 +15,6 @@ import ru.ylab.service.UserService;
 
 @Testcontainers
 class CarControllerTest extends AbstractIntegrationTest {
-
     @InjectMocks
     private CarController carController;
     private UserController userController;

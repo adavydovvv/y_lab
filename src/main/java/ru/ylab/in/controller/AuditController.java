@@ -17,5 +17,4 @@ public class AuditController {
         auditService.logAction(auditLog);
     }
 
-
 }
