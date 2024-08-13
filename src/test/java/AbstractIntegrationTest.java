@@ -6,8 +6,8 @@ public abstract class AbstractIntegrationTest {
 
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
             .withDatabaseName("carshop")
-            .withUsername("testuser")
-            .withPassword("testpass");
+            .withUsername("admin")
+            .withPassword("ylab");
 
     @BeforeAll
     public static void startContainer() {
