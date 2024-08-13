@@ -198,5 +198,4 @@ public class OrderMenu {
         auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Filtered orders by date: " + date));
         Thread.sleep(3000);
     }
-
 }

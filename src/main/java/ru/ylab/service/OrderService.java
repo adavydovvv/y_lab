@@ -86,7 +86,6 @@ public class OrderService {
         }
         return orderNames;
     }
-
     public int getLastOrderId() {
         return orderRepository.getLastOrderId();
     }

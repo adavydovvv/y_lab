@@ -42,7 +42,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
         userController.deleteUser(user.getUsername());
         assertThat(userController.getUsersForTests()).doesNotContain(user);
     }
-
     @Test
     void testGetUserByUsername() {
         User result = userController.getUserByUsername("admin");

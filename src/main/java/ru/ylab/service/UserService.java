@@ -144,5 +144,4 @@ public class UserService{
         userRepository.updateUserPurchasesCount(user);
     }
 
-
 }

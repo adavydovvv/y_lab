@@ -153,5 +153,4 @@ public class UserMenu {
         auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Filtered users by purchases count: " + purchasesCount));
         Thread.sleep(3000);
     }
-
 }

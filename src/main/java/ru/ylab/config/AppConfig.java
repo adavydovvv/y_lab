@@ -29,6 +29,7 @@ public class AppConfig {
 
     public void setAuthorizedUser(User authorizedUser) {
         this.authorizedUser = authorizedUser;
+
     }
 
     public static void logout(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException, SQLException {

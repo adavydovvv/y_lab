@@ -11,6 +11,5 @@ public class CarShop {
         LiquiBase.migration();
         MainDisplay.display();
     }
-
 }
 

@@ -111,7 +111,6 @@ public class CarMenu {
         auditController.logAction(new AuditLog(LocalDateTime.now(), AppConfig.getInstance().getAuthorizedUser(), "Deleted car with ID: " + carIdToDelete));
         Thread.sleep(3000);
     }
-
     public static void filterCarsByBrand(Scanner scanner, CarController carController, AuditController auditController) throws InterruptedException {
         System.out.println("Enter the brand:");
         String brand = scanner.nextLine();
