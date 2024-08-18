@@ -77,7 +77,6 @@ public class CarRepository {
             System.out.println("Database error occurred");
         }
     }
-
     public void removeCar(Car car) {
         String sql = "DELETE FROM carshop.car WHERE id = ?";
 

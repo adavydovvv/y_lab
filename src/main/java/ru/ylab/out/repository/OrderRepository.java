@@ -34,7 +34,6 @@ public class OrderRepository {
         }
 
     }
-
     public List<Order> getOrders() {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM carshop.order";

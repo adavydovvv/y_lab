@@ -14,6 +14,7 @@ public class AuditLog {
         this.action = action;
     }
 
+
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

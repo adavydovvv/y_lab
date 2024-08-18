@@ -131,7 +131,6 @@ public class UserService{
         return userNames;
 
     }
-
     public int getLastUserId() {
         return userRepository.getLastUserId();
     }

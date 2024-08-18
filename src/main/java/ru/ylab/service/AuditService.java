@@ -14,5 +14,4 @@ public class AuditService {
     public void logAction(AuditLog auditLog) {
         auditRepository.logAction(auditLog);
     }
-
 }

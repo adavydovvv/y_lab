@@ -21,6 +21,7 @@ public class OrderController {
     public void addOrder(Order order) throws SQLException {
         orderService.addOrder(order);
     }
+
     public void changeOrderStatus(Order order, OrderStatus status) {
         orderService.changeOrderStatus(order, status);
     }

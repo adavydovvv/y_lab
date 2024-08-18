@@ -4,7 +4,6 @@ import ru.ylab.in.controller.AuditController;
 import ru.ylab.in.controller.CarController;
 import ru.ylab.in.controller.OrderController;
 import ru.ylab.in.controller.UserController;
-import ru.ylab.in.menu.MainMenu;
 import ru.ylab.model.User;
 
 import java.sql.SQLException;
@@ -35,7 +34,7 @@ public class AppConfig {
     public static void logout(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException, SQLException {
         AppConfig.getInstance().setAuthorizedUser(null);
         System.out.println("Logged out successfully.");
-        MainMenu.display(scanner, userController, carController, orderController, auditController);
+        //MainMenu.display(scanner, userController, carController, orderController, auditController);
     }
     public static void exit(Scanner scanner){
         System.out.println("Exiting...");

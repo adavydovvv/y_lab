@@ -49,6 +49,7 @@ public class UserController {
         return userService.getUsersSortedByFirstName();
     }
 
+
     public List<String> getUsersSortedByLastName(){
         return userService.getUsersSortedByLastName();
     }

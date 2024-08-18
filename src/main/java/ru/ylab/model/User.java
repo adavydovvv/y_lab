@@ -11,6 +11,9 @@ public class User {
     private String email;
     private int number_of_purchases;
 
+    public User(){
+
+    }
     public User(int userId, String username, String password, String firstName, String lastName, Role role, String phone, String email) {
         this.userId = userId;
         this.username = username;

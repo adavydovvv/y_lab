@@ -13,6 +13,7 @@ public class Order {
 
     private String descriptionOfTheService;
 
+    public Order(){}
     public Order(int orderId, User customer, Car car, OrderStatus status, Date date) {
         this.orderId = orderId;
         this.customer = customer;

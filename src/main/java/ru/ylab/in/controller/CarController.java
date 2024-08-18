@@ -1,7 +1,6 @@
 package ru.ylab.in.controller;
 
 import ru.ylab.model.Car;
-import ru.ylab.model.Role;
 import ru.ylab.service.CarService;
 
 import java.util.List;
@@ -33,24 +32,24 @@ public class CarController {
         return carService.filterCarsByBrand(brand);
     }
 
-    public List<Car> filterCarsByModel(String model) {
+    public List<String> filterCarsByModel(String model) {
         return carService.filterCarsByModel(model);
     }
 
-    public List<Car> filterCarsByYear(int year) {
+    public List<String> filterCarsByYear(int year) {
         return carService.filterCarsByYear(year);
     }
 
 
-    public List<Car> filterCarsByPrice(int price) {
+    public List<String> filterCarsByPrice(int price) {
         return carService.filterCarsByPrice(price);
     }
 
-    public List<Car> filterCarsByCondition(String condition) {
+    public List<String> filterCarsByCondition(String condition) {
         return carService.filterCarsByCondition(condition);
     }
 
-    public List<Car> filterCarsByEngineType(String engine_type) {
+    public List<String> filterCarsByEngineType(String engine_type) {
         return carService.filterCarsByEngineType(engine_type);
     }
 

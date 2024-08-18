@@ -1,7 +1,9 @@
 package ru.ylab.service;
 
 import ru.ylab.config.AppConfig;
+import ru.ylab.in.controller.CarController;
 import ru.ylab.model.*;
+import ru.ylab.out.repository.CarRepository;
 import ru.ylab.out.repository.OrderRepository;
 
 import java.sql.SQLException;
@@ -13,9 +15,11 @@ public class OrderService {
 
     private AppConfig appConfig = AppConfig.getInstance();
     private final OrderRepository orderRepository;
+    private final CarController carController;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
+        this.carController = new CarController(new CarService(new CarRepository()));
     }
 
     public void addOrder(Order order) throws SQLException {

@@ -76,8 +76,6 @@ public class UserRepository {
             System.out.println("Database error occurred");
         }
     }
-
-
     public void updateUserRole(String username, Role role) {
         if (role == Role.ADMIN) {
             System.out.println("Users cannot be assigned as administrators");
