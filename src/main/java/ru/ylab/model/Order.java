@@ -21,7 +21,6 @@ public class Order {
         this.status = status;
         this.date = date;
     }
-
     public Order(int orderId, User customer, Car car, OrderStatus status, double price, String descriptionOfTheService, Date date) {
         this.orderId = orderId;
         this.customer = customer;

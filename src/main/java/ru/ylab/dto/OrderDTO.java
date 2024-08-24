@@ -1,22 +1,25 @@
 package ru.ylab.dto;
 
 import jakarta.validation.constraints.NotNull;
+import ru.ylab.model.Car;
+import ru.ylab.model.OrderStatus;
+import ru.ylab.model.User;
+
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class OrderDTO {
     private int id;
 
-    @NotNull(message = "Customer ID is mandatory")
-    private int customerId;
+    @NotNull(message = "Customer is mandatory")
+    private User customer;
 
     @NotNull(message = "Car ID is mandatory")
-    private int carId;
+    private Car car;
 
-    private String status;
+    private OrderStatus status;
     private double price;
     private String descriptionOfTheService;
-    private LocalDate date;
+    private Date date;
 
     public int getId() {
         return id;
@@ -26,29 +29,29 @@ public class OrderDTO {
         this.id = id;
     }
 
-    @NotNull(message = "Customer ID is mandatory")
-    public int getCustomerId() {
-        return customerId;
+    @NotNull(message = "Customer is mandatory")
+    public User getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(@NotNull(message = "Customer ID is mandatory") int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(@NotNull(message = "Customer is mandatory") User customer) {
+        this.customer = customer;
     }
 
-    @NotNull(message = "Car ID is mandatory")
-    public int getCarId() {
-        return carId;
+    @NotNull(message = "Car is mandatory")
+    public Car getCar() {
+        return car;
     }
 
-    public void setCarId(@NotNull(message = "Car ID is mandatory") int carId) {
-        this.carId = carId;
+    public void setCar(@NotNull(message = "Car is mandatory") Car car) {
+        this.car = car;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
@@ -68,11 +71,11 @@ public class OrderDTO {
         this.descriptionOfTheService = descriptionOfTheService;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

@@ -14,7 +14,6 @@ public class Car {
     private String engine_type;
     private boolean car_available;
 
-
     public Car(){
 
     }

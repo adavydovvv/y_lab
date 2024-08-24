@@ -6,7 +6,6 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

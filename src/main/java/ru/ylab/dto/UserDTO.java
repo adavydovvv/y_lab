@@ -8,6 +8,16 @@ import ru.ylab.model.Role;
 
 public class UserDTO {
 
+    public UserDTO(int userId, String firstName, String lastName, String username, String email, String phone) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+    }
+
+
     private int userId;
 
     @NotBlank(message = "Username is mandatory")
@@ -32,6 +42,10 @@ public class UserDTO {
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email must not be blank")
     private String email;
+
+    public UserDTO() {
+
+    }
 
     public int getId() {
         return userId;

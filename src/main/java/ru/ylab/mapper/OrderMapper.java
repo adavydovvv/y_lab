@@ -6,17 +6,25 @@ import org.mapstruct.factory.Mappers;
 import ru.ylab.dto.OrderDTO;
 import ru.ylab.model.Order;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
     @Mapping(source = "orderId", target = "id")
-    @Mapping(source = "customer.userId", target = "customerId")
-    @Mapping(source = "car.id", target = "carId")
+    @Mapping(source = "customer", target = "customer")
+    @Mapping(source = "car", target = "car")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "price", target = "price")
+    @Mapping(source = "descriptionOfTheService", target = "descriptionOfTheService")
+    @Mapping(source = "date", target = "date")
     OrderDTO orderToOrderDTO(Order order);
 
     @Mapping(source = "id", target = "orderId")
-    @Mapping(source = "customerId", target = "customer.userId")
-    @Mapping(source = "carId", target = "car.id")
+    @Mapping(source = "customer", target = "customer")
+    @Mapping(source = "car", target = "car")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "price", target = "price")
+    @Mapping(source = "descriptionOfTheService", target = "descriptionOfTheService")
+    @Mapping(source = "date", target = "date")
     Order orderDTOToOrder(OrderDTO orderDTO);
 }

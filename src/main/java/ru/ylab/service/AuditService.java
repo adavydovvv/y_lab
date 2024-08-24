@@ -3,7 +3,6 @@ package ru.ylab.service;
 import ru.ylab.model.AuditLog;
 import ru.ylab.out.repository.AuditRepository;
 
-
 public class AuditService {
     private final AuditRepository auditRepository;
 

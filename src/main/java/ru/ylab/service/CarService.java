@@ -1,4 +1,5 @@
 package ru.ylab.service;
+import org.springframework.stereotype.Service;
 import ru.ylab.config.AppConfig;
 import ru.ylab.model.Car;
 import ru.ylab.out.repository.CarRepository;
@@ -6,8 +7,9 @@ import ru.ylab.out.repository.CarRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CarService {
-    private AppConfig appConfig = AppConfig.getInstance();
+    //private AppConfig appConfig = AppConfig.getInstance();
     private final CarRepository carRespository;
 
     public CarService(CarRepository carRespository) {
@@ -92,6 +94,7 @@ public class CarService {
     public void updateCarIsAvailable(Car car, boolean isAvailable){
         carRespository.updateCarIsAvailable(car, isAvailable);
     }
+
 
     public int getLastCarId(){
         return carRespository.getLastCarId();

@@ -1,5 +1,9 @@
 package ru.ylab.in.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.ylab.dto.UserDTO;
 import ru.ylab.model.Role;
 import ru.ylab.model.User;
 import ru.ylab.service.UserService;
@@ -7,86 +11,78 @@ import ru.ylab.service.UserService;
 import java.sql.SQLException;
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    public void deleteUser(String username) {
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
+        return ResponseEntity.noContent().build();
     }
 
-    public void updateUserPurchasesCount(User user) {
+    @PutMapping("/{username}/purchases")
+    public ResponseEntity<Void> updateUserPurchasesCount(@PathVariable String username, @RequestBody User user) {
         userService.updateUserPurchasesCount(user);
-    }
-    public void registerUser(User user) throws SQLException {
-        userService.registerUser(user);
+        return ResponseEntity.noContent().build();
     }
 
-    public void loginUser(String username, String password){
+    @PostMapping
+    public ResponseEntity<User> registerUser(@RequestBody UserDTO userDTO) throws SQLException {
+        userService.registerUser(userDTO);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<Void> loginUser(@RequestParam String username, @RequestParam String password) {
         userService.loginUser(username, password);
+        return ResponseEntity.ok().build();
     }
 
-    public void updateUserPassword(User user, String password){
-        userService.updateUserPassword(user, password);
+    @PutMapping("/{username}/password")
+    public ResponseEntity<Void> updateUserPassword(@PathVariable String username, @RequestBody String password) {
+        userService.updateUserPassword(userService.getUserByUsername(username), password);
+        return ResponseEntity.noContent().build();
     }
 
-    public void updateUserRole(String username, Role role){
+    @PutMapping("/{username}/role")
+    public ResponseEntity<Void> updateUserRole(@PathVariable String username, @RequestBody Role role) {
         userService.updateUserRole(username, role);
-    }
-
-    public void logoutUser(){
-        userService.logoutUser();
-    }
-
-    public List<String> getUsers(){
-        return userService.getUsers();
-    }
-
-    public List<String> getUsersSortedByFirstName(){
-        return userService.getUsersSortedByFirstName();
+        return ResponseEntity.noContent().build();
     }
 
 
-    public List<String> getUsersSortedByLastName(){
-        return userService.getUsersSortedByLastName();
+    @GetMapping
+    public ResponseEntity<List<String>> getUsers() {
+        return ResponseEntity.ok(userService.getUsers());
     }
 
-    public List<String> getUsersSortedByEmail(){
-        return userService.getUsersSortedByEmail();
+    @GetMapping("/sorted")
+    public ResponseEntity<List<UserDTO>> getUsersSorted(@RequestParam String sortBy) {
+        return ResponseEntity.ok(userService.getUsersSorted(sortBy));
     }
 
-    public List<String> getUsersSortedByPurchasesCount(){
-        return userService.getUsersSortedByPurchasesCount();
+    @GetMapping("/filtered")
+    public ResponseEntity<List<UserDTO>> getUsersFiltered(@RequestParam String filterBy, @RequestParam String filterValue) {
+        return ResponseEntity.ok(userService.getUsersFiltered(filterBy, filterValue));
     }
 
-    public List<String> filterUsersByFirstName(String firstname){
-        return userService.filterUsersByFirstName(firstname);
+    @GetMapping("/last-id")
+    public ResponseEntity<Integer> getLastUserId() {
+        return ResponseEntity.ok(userService.getLastUserId());
     }
 
-    public List<String> filterUsersByLastName(String lastname){
-        return userService.filterUsersByLastName(lastname);
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUserByUsername(username));
     }
 
-    public List<String> filterUsersByEmail(String email){
-        return userService.filterUsersByEmail(email);
-    }
-
-    public List<String> filterUsersByPurchasesCount(int purchasesCount){
-        return userService.filterUsersByPurchasesCount(purchasesCount);
-    }
-
-    public int getLastUserId(){
-        return userService.getLastUserId();
-    }
-
-    public User getUserByUsername(String username) {
-        return userService.getUserByUsername(username);
-    }
-
-    public List<User> getUsersForTests(){
-        return userService.getUsersForTests();
+    @GetMapping("/tests")
+    public ResponseEntity<List<User>> getUsersForTests() {
+        return ResponseEntity.ok(userService.getUsersForTests());
     }
 }

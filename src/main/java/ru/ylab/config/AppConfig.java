@@ -1,44 +1,62 @@
 package ru.ylab.config;
 
-import ru.ylab.in.controller.AuditController;
-import ru.ylab.in.controller.CarController;
-import ru.ylab.in.controller.OrderController;
-import ru.ylab.in.controller.UserController;
-import ru.ylab.model.User;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.sql.SQLException;
-import java.util.Scanner;
+import javax.sql.DataSource;
+import java.util.List;
 
-public class AppConfig {
-    private static AppConfig instance;
-    private User authorizedUser;
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "ru.ylab")
+@PropertySource("classpath:application.yml")
+public class AppConfig implements WebMvcConfigurer {
 
-    private AppConfig() {}
+    private final Environment env;
 
-    public static AppConfig getInstance() {
-        if (instance == null) {
-            instance = new AppConfig();
-        }
-        return instance;
+    public AppConfig(Environment env) {
+        this.env = env;
     }
 
-    public User getAuthorizedUser() {
-        return authorizedUser;
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl("jdbc:postgresql://localhost:5438/carshop");
+        dataSource.setUsername("admin");
+        dataSource.setPassword("ylab");
+
+        return dataSource;
     }
 
-    public void setAuthorizedUser(User authorizedUser) {
-        this.authorizedUser = authorizedUser;
-
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 
-    public static void logout(Scanner scanner, UserController userController, CarController carController, OrderController orderController, AuditController auditController) throws InterruptedException, SQLException {
-        AppConfig.getInstance().setAuthorizedUser(null);
-        System.out.println("Logged out successfully.");
-        //MainMenu.display(scanner, userController, carController, orderController, auditController);
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-    public static void exit(Scanner scanner){
-        System.out.println("Exiting...");
-        scanner.close();
-        System.exit(0);
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
+                .indentOutput(true);
+        converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
     }
 }

@@ -1,9 +1,9 @@
 package ru.ylab.service;
 
-import ru.ylab.config.AppConfig;
+import org.springframework.stereotype.Service;
+import ru.ylab.dto.OrderDTO;
 import ru.ylab.in.controller.CarController;
 import ru.ylab.model.*;
-import ru.ylab.out.repository.CarRepository;
 import ru.ylab.out.repository.OrderRepository;
 
 import java.sql.SQLException;
@@ -11,21 +11,28 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class OrderService {
 
-    private AppConfig appConfig = AppConfig.getInstance();
     private final OrderRepository orderRepository;
-    private final CarController carController;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.carController = new CarController(new CarService(new CarRepository()));
     }
 
-    public void addOrder(Order order) throws SQLException {
+    public void addOrder(OrderDTO orderDTO) {
+        Order order = convertToOrder(orderDTO);
         orderRepository.addOrder(order);
-        System.out.println("Order added");
+    }
 
+    private Order convertToOrder(OrderDTO orderDTO) {
+        Order order = new Order();
+        order.setOrderId(orderDTO.getId());
+        order.setCustomer(orderDTO.getCustomer());
+        order.setCar(orderDTO.getCar());
+        order.setStatus(orderDTO.getStatus());
+        order.setDate(orderDTO.getDate());
+        return order;
     }
 
     public void changeOrderStatus(Order order, OrderStatus status) {
@@ -41,11 +48,6 @@ public class OrderService {
         return orderNames;
 
     }
-
-    public List<Order> getOrdersforTests() {
-        return orderRepository.getOrders();
-    }
-
 
     public void deleteOrder(Order order) {
         orderRepository.deleteOrder(order);

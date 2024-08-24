@@ -1,3 +1,4 @@
+
 package ru.ylab.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -115,3 +116,4 @@ public class CarDTO {
         this.engine_type = engine_type;
     }
 }
+

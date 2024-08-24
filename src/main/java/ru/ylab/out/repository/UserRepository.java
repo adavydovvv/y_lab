@@ -1,246 +1,137 @@
 package ru.ylab.out.repository;
 
-import ru.ylab.config.AppConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.ylab.dto.UserDTO;
 import ru.ylab.model.Role;
 import ru.ylab.model.User;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
+@Repository
 public class UserRepository {
 
-    AppConfig appConfig = AppConfig.getInstance();
+    private final JdbcTemplate jdbcTemplate;
 
-    public void registerUser(User user) throws SQLException {
-
-        String sql = "INSERT INTO carshop.users (id, username, password, first_name, last_name, phone_number, email, role) " +
-                "VALUES (nextval('public.user_id_seq'), ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getFirstName());
-            stmt.setString(4, user.getLastName());
-            stmt.setString(5, user.getPhone());
-            stmt.setString(6, user.getEmail());
-            stmt.setString(7, user.getRole().name());
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Error when adding a user: " + e.getMessage());
-        }
+    @Autowired
+    public UserRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void deleteUser(String username){
+    public void registerUser(UserDTO user) {
+        String sql = "INSERT INTO carshop.users (id, username, password, first_name, last_name, phone_number, email, role) " +
+                "VALUES (nextval('public.user_id_seq'), ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName(),
+                user.getPhone(), user.getEmail(), user.getRole().name());
+    }
 
+    public void deleteUser(String username) {
         String sql = "DELETE FROM carshop.users WHERE username = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, username);
-            stmt.executeUpdate();
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
-
+        jdbcTemplate.update(sql, username);
     }
 
     public void loginUser(String username, String password) {
         String sql = "SELECT * FROM carshop.users WHERE username = ? AND password = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("first_name"), rs.getString("last_name"), Role.valueOf(rs.getString("role")) ,rs.getString("phone_number"), rs.getString("email"));
-                    appConfig.setAuthorizedUser(user);
-                    System.out.println("User logged in successfully");
-                } else {
-                    System.out.println("Error! Check your username and password");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
+        User user = jdbcTemplate.queryForObject(sql, new Object[]{username, password}, this::mapRowToUser);
+        if (user != null) {
+            System.out.println("User logged in successfully");
+        } else {
+            System.out.println("Error! Check your username and password");
         }
     }
+
     public void updateUserRole(String username, Role role) {
         if (role == Role.ADMIN) {
             System.out.println("Users cannot be assigned as administrators");
         } else {
             String sql = "UPDATE carshop.users SET role = ? WHERE username = ?";
-
-            try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setString(1, role.name());
-                stmt.setString(2, username);
-
-                int rowsUpdated = stmt.executeUpdate();
-                if (rowsUpdated > 0) {
-                    System.out.println("User data has been successfully updated");
-                } else {
-                    System.out.println("User not found or no changes made");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Database error occurred");
-            }
+            jdbcTemplate.update(sql, role.name(), username);
         }
     }
 
     public void updateUserPurchasesCount(User user) {
         String sql = "UPDATE carshop.users SET number_of_purchases = ? WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, user.getNumber_of_purchases());
-            stmt.setInt(2, user.getUserId());
-
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated == 0) {
-                System.out.println("User not found or no changes made");
-            }
-        } catch (SQLException e) {
-            System.out.println("User purchases count update failed: " + e.getMessage());
-        }
+        jdbcTemplate.update(sql, user.getNumber_of_purchases(), user.getUserId());
     }
 
     public void updateUserPassword(User user, String password) {
         String sql = "UPDATE carshop.users SET password = ? WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, password);
-            stmt.setInt(2, user.getUserId());
-
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("User password has been successfully updated");
-            } else {
-                System.out.println("User not found or no changes made");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
+        jdbcTemplate.update(sql, password, user.getUserId());
     }
-
 
     public List<User> getUsers() {
-        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM carshop.users";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("first_name"), rs.getString("last_name"), Role.valueOf(rs.getString("role")) ,rs.getString("phone_number"), rs.getString("email"));
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
-
-        return users;
+        return jdbcTemplate.query(sql, this::mapRowToUser);
     }
-
 
 
     public List<User> getUsersSortedByFirstName() {
-        return getUsers().stream()
-                .sorted(Comparator.comparing(User::getFirstName))
-                .toList();
+        String sql = "SELECT * FROM carshop.users ORDER BY first_name";
+        return jdbcTemplate.query(sql, this::mapRowToUser);
     }
 
     public List<User> getUsersSortedByLastName() {
-        return getUsers().stream()
-                .sorted(Comparator.comparing(User::getLastName))
-                .toList();
-
+        String sql = "SELECT * FROM carshop.users ORDER BY last_name";
+        return jdbcTemplate.query(sql, this::mapRowToUser);
     }
 
     public List<User> getUsersSortedByEmail() {
-        return getUsers().stream()
-                .sorted(Comparator.comparing(User::getEmail))
-                .toList();
-
+        String sql = "SELECT * FROM carshop.users ORDER BY email";
+        return jdbcTemplate.query(sql, this::mapRowToUser);
     }
 
     public List<User> getUsersSortedByPurchasesCount() {
-        return getUsers().stream()
-                .sorted(Comparator.comparing(User::getNumber_of_purchases))
-                .toList();
-
-    }
-
-    public List<User> filterUsersByFirstName(String firstname) {
-        return getUsers().stream()
-                .filter(user -> user.getFirstName().equals(firstname))
-                .toList();
-
-    }
-
-    public List<User> filterUsersByLastName(String lastname) {
-        return getUsers().stream()
-                .filter(user -> user.getLastName().equals(lastname))
-                .toList();
-
-    }
-
-    public List<User> filterUsersByEmail(String email) {
-        return getUsers().stream()
-                .filter(user -> user.getEmail().equals(email))
-                .toList();
-
-    }
-
-    public List<User> filterUsersByPurchasesCount(int number_of_purchases) {
-        return getUsers().stream()
-                .filter(user -> user.getNumber_of_purchases() == (number_of_purchases))
-                .toList();
-
-    }
-
-    public int getLastUserId() {
-        return getUsers().size();
+        String sql = "SELECT * FROM carshop.users ORDER BY number_of_purchases";
+        return jdbcTemplate.query(sql, this::mapRowToUser);
     }
 
     public User getUserByUsername(String username) {
-        for (User user : getUsers()) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-        return null;
+        String sql = "SELECT * FROM carshop.users WHERE username = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{username}, this::mapRowToUser);
     }
 
     public User getUserById(int id) {
-        for (User user : getUsers()) {
-            if (user.getUserId() == id) {
-                return user;
-            }
-        }
-        return null;
+        String sql = "SELECT * FROM carshop.users WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, this::mapRowToUser);
     }
 
+    public List<User> filterUsersByFirstName(String firstname) {
+        String sql = "SELECT * FROM carshop.users WHERE first_name = ?";
+        return jdbcTemplate.query(sql, new Object[]{firstname}, this::mapRowToUser);
+    }
 
+    public List<User> filterUsersByLastName(String lastname) {
+        String sql = "SELECT * FROM carshop.users WHERE last_name = ?";
+        return jdbcTemplate.query(sql, new Object[]{lastname}, this::mapRowToUser);
+    }
+
+    public List<User> filterUsersByEmail(String email) {
+        String sql = "SELECT * FROM carshop.users WHERE email = ?";
+        return jdbcTemplate.query(sql, new Object[]{email}, this::mapRowToUser);
+    }
+
+    public List<User> filterUsersByPurchasesCount(int number_of_purchases) {
+        String sql = "SELECT * FROM carshop.users WHERE number_of_purchases = ?";
+        return jdbcTemplate.query(sql, new Object[]{number_of_purchases}, this::mapRowToUser);
+    }
+
+    public int getLastUserId() {
+        String sql = "SELECT COUNT(*) FROM carshop.users";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    private User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {
+        return new User(
+                rs.getInt("id"),
+                rs.getString("username"),
+                rs.getString("password"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                Role.valueOf(rs.getString("role")),
+                rs.getString("phone_number"),
+                rs.getString("email")
+        );
+    }
 }
-
-
