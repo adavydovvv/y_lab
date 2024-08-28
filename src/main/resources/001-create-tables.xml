@@ -9,7 +9,6 @@
         <sql>
             CREATE SCHEMA IF NOT EXISTS carshop;
         </sql>
-
         <createSequence sequenceName="user_id_seq" incrementBy="5"/>
         <createSequence sequenceName="car_id_seq" incrementBy="1"/>
         <createSequence sequenceName="order_id_seq" incrementBy="1"/>

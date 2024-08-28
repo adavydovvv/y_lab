@@ -1,4 +1,5 @@
 package ru.ylab.service;
+import org.springframework.stereotype.Service;
 import ru.ylab.config.AppConfig;
 import ru.ylab.model.Car;
 import ru.ylab.out.repository.CarRepository;
@@ -6,8 +7,9 @@ import ru.ylab.out.repository.CarRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CarService {
-    private AppConfig appConfig = AppConfig.getInstance();
+    //private AppConfig appConfig = AppConfig.getInstance();
     private final CarRepository carRespository;
 
     public CarService(CarRepository carRespository) {
@@ -50,28 +52,49 @@ public class CarService {
         return carNames;
     }
 
-    public List<Car> filterCarsByModel(String model) {
-        return carRespository.filterCarsByModel(model);
+    public List<String> filterCarsByModel(String model) {
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.filterCarsByModel(model)) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
+        }
+        return carNames;
     }
 
-    public List<Car> filterCarsByYear(int year) {
-        return carRespository.filterCarsByYear(year);
+    public List<String> filterCarsByYear(int year) {
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.filterCarsByYear(year)) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
+        }
+        return carNames;
     }
 
-    public List<Car> filterCarsByPrice(int price) {
-        return carRespository.filterCarsByPrice(price);
+    public List<String> filterCarsByPrice(int price) {
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.filterCarsByPrice(price)) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
+        }
+        return carNames;
     }
 
-    public List<Car> filterCarsByCondition(String condition) {
-        return carRespository.filterCarsByCondition(condition);
+    public List<String> filterCarsByCondition(String condition) {
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.filterCarsByCondition(condition)) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
+        }
+        return carNames;
     }
 
-    public List<Car> filterCarsByEngineType(String engine_type) {
-        return carRespository.filterCarsByEngineType(engine_type);
+    public List<String> filterCarsByEngineType(String engine_type) {
+        List<String> carNames = new ArrayList<>();
+        for (Car car : carRespository.filterCarsByEngineType(engine_type)) {
+            carNames.add("ID: " + car.getId() + " " + car.getBrand() + " " + car.getModel() + " " + car.getColor() + ", Price: " + car.getPrice());
+        }
+        return carNames;
     }
     public void updateCarIsAvailable(Car car, boolean isAvailable){
         carRespository.updateCarIsAvailable(car, isAvailable);
     }
+
 
     public int getLastCarId(){
         return carRespository.getLastCarId();

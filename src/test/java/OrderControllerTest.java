@@ -1,60 +1,63 @@
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ylab.config.AppConfig;
+import org.springframework.http.ResponseEntity;
+import ru.ylab.dto.OrderDTO;
 import ru.ylab.in.controller.OrderController;
-import ru.ylab.in.controller.UserController;
-import ru.ylab.model.Car;
 import ru.ylab.model.Order;
 import ru.ylab.model.OrderStatus;
-import ru.ylab.out.repository.OrderRepository;
-import ru.ylab.out.repository.UserRepository;
 import ru.ylab.service.OrderService;
-import ru.ylab.service.UserService;
 
-@Testcontainers
-public class OrderControllerTest extends AbstractIntegrationTest {
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class OrderControllerTest {
+
     @InjectMocks
     private OrderController orderController;
-    private UserController userController;
+
+    @Mock
+    private OrderService orderService;
 
     @BeforeEach
-    void setUp() throws SQLException {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userController = new UserController(new UserService(new UserRepository()));
-        userController.loginUser("manager", "manager");
-
-        Car car = new Car(1, "Toyota", "Camry", 2021, 30000, "White", "New", 1, 250, 2.5, "Gasoline");
-        orderController = new OrderController(new OrderService(new OrderRepository()));
-        orderController.addOrder(new Order(1, AppConfig.getInstance().getAuthorizedUser(), car, OrderStatus.PENDING, 30000, "Oil change", Date.valueOf(LocalDate.now())));
     }
 
     @Test
-    void testAddOrder() throws SQLException {
-        Car car = new Car(2, "Honda", "Accord", 2020, 28000, "Black", "New", 1, 240, 2.0, "Gasoline");
-        Order order = new Order(2, AppConfig.getInstance().getAuthorizedUser(), car, OrderStatus.PENDING, 28000, "Tire change", Date.valueOf(LocalDate.now()));
-        orderController.addOrder(order);
-        assertThat(orderController.getOrdersforTests()).contains(orderController.getOrderById(2));
+    public void testAddOrder() throws SQLException {
+        OrderDTO orderDTO = new OrderDTO();
+        ResponseEntity<Void> response = orderController.addOrder(orderDTO);
+
+        assertEquals(200, response.getStatusCodeValue());
+        verify(orderService).addOrder(orderDTO);
     }
 
     @Test
-    void testDeleteOrder() {
-        Order order = orderController.getOrderById(1);
-        orderController.deleteOrder(order);
-        assertThat(orderController.getOrdersforTests()).doesNotContain(order);
+    public void testGetOrders() {
+        when(orderService.getOrders()).thenReturn(Collections.singletonList("Order1"));
+
+        ResponseEntity<List<String>> response = orderController.getOrders();
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
     }
 
     @Test
-    void testChangeOrderStatus() {
-        Order order = orderController.getOrderById(1);
-        orderController.changeOrderStatus(order, OrderStatus.CONFIRMED);
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.CONFIRMED);
+    public void testDeleteOrder() {
+        Order order = new Order();
+        when(orderService.getOrderById(1)).thenReturn(order);
+
+        ResponseEntity<Void> response = orderController.deleteOrder(1);
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(orderService).deleteOrder(order);
     }
+
 }

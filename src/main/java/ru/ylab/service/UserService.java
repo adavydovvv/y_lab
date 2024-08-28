@@ -1,30 +1,25 @@
 package ru.ylab.service;
 
-import ru.ylab.config.AppConfig;
+import org.springframework.stereotype.Service;
+import ru.ylab.dto.UserDTO;
 import ru.ylab.model.User;
 import ru.ylab.model.Role;
 import ru.ylab.out.repository.UserRepository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
+public class UserService {
 
-
-public class UserService{
-
-    AppConfig appConfig = AppConfig.getInstance();
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User getAuthorizedUser() {
-        return appConfig.getAuthorizedUser();
-    }
 
-    public void registerUser(User user) throws SQLException {
+    public void registerUser(UserDTO user) {
         userRepository.registerUser(user);
     }
 
@@ -41,102 +36,135 @@ public class UserService{
     }
 
     public void loginUser(String username, String password) {
-       userRepository.loginUser(username, password);
-    }
-
-
-    public void logoutUser() {
-        appConfig.setAuthorizedUser(null);
+        userRepository.loginUser(username, password);
     }
 
     public List<String> getUsers() {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.getUsers()) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
+        return userRepository.getUsers().stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<User> getUsersForTests() {
         return userRepository.getUsers();
     }
-    
 
     public List<String> getUsersSortedByFirstName() {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.getUsersSortedByFirstName()) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
+        return userRepository.getUsersSortedByFirstName().stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
-    public List<String> getUsersSortedByLastName() {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.getUsersSortedByLastName()) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
 
+    public List<String> getUsersSortedByLastName() {
+        return userRepository.getUsersSortedByLastName().stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<String> getUsersSortedByEmail() {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.getUsersSortedByEmail()) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
-
+        return userRepository.getUsersSortedByEmail().stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<String> getUsersSortedByPurchasesCount() {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.getUsersSortedByPurchasesCount()) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
-
+        return userRepository.getUsersSortedByPurchasesCount().stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<String> filterUsersByFirstName(String firstname) {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.filterUsersByFirstName(firstname)) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
-
+        return userRepository.filterUsersByFirstName(firstname).stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<String> filterUsersByLastName(String lastname) {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.filterUsersByLastName(lastname)) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
-
+        return userRepository.filterUsersByLastName(lastname).stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<String> filterUsersByEmail(String email) {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.filterUsersByEmail(email)) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
-
+        return userRepository.filterUsersByEmail(email).stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<String> filterUsersByPurchasesCount(int number_of_purchases) {
-        List<String> userNames = new ArrayList<>();
-        for (User user : userRepository.filterUsersByPurchasesCount(number_of_purchases)) {
-            userNames.add("ID: " + user.getUserId() + " " + user.getFirstName() + " " + user.getLastName() + ", username: " + user.getUsername() + ", Email: " + user.getEmail() + ", Phone: " + user.getPhone());
-        }
-        return userNames;
-
+        return userRepository.filterUsersByPurchasesCount(number_of_purchases).stream()
+                .map(user -> String.format("ID: %d %s %s, username: %s, Email: %s, Phone: %s",
+                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPhone()))
+                .collect(Collectors.toList());
     }
+
+    public List<UserDTO> getUsersSorted(String sortBy) {
+        List<User> users = getUsersSortedInternal(sortBy);
+        return convertToDTO(users);
+    }
+
+    public List<UserDTO> getUsersFiltered(String filterBy, String filterValue) {
+        List<User> users = getUsersFilteredInternal(filterBy, filterValue);
+        return convertToDTO(users);
+    }
+
+    private List<User> getUsersSortedInternal(String sortBy) {
+        switch (sortBy.toLowerCase()) {
+            case "firstname":
+                return userRepository.getUsersSortedByFirstName();
+            case "lastname":
+                return userRepository.getUsersSortedByLastName();
+            case "email":
+                return userRepository.getUsersSortedByEmail();
+            case "purchases":
+                return userRepository.getUsersSortedByPurchasesCount();
+            default:
+                throw new IllegalArgumentException("Invalid sort parameter: " + sortBy);
+        }
+    }
+
+    private List<User> getUsersFilteredInternal(String filterBy, String filterValue) {
+        switch (filterBy.toLowerCase()) {
+            case "firstname":
+                return userRepository.filterUsersByFirstName(filterValue);
+            case "lastname":
+                return userRepository.filterUsersByLastName(filterValue);
+            case "email":
+                return userRepository.filterUsersByEmail(filterValue);
+            case "purchases":
+                return userRepository.filterUsersByPurchasesCount(Integer.parseInt(filterValue));
+            default:
+                throw new IllegalArgumentException("Invalid filter parameter: " + filterBy);
+        }
+    }
+
+    private List<UserDTO> convertToDTO(List<User> users) {
+        return users.stream()
+                .map(user -> new UserDTO(
+                        user.getUserId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getPhone()))
+                .collect(Collectors.toList());
+    }
+
+
 
     public int getLastUserId() {
         return userRepository.getLastUserId();
     }
 
-    public User getUserByUsername(String username){
+    public User getUserByUsername(String username) {
         return userRepository.getUserByUsername(username);
     }
 
@@ -144,4 +172,16 @@ public class UserService{
         userRepository.updateUserPurchasesCount(user);
     }
 
+    private User convertToUser(UserDTO userDTO) {
+        User user = new User();
+        user.setUserId(userDTO.getId());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setRole(userDTO.getRole());
+        user.setPhone(userDTO.getPhone());
+        user.setEmail(userDTO.getEmail());
+        return user;
+    }
 }

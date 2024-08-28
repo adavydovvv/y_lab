@@ -1,58 +1,61 @@
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.http.ResponseEntity;
+import ru.ylab.dto.UserDTO;
 import ru.ylab.in.controller.UserController;
-import ru.ylab.model.Role;
 import ru.ylab.model.User;
-import ru.ylab.out.repository.UserRepository;
 import ru.ylab.service.UserService;
 
-@Testcontainers
-public class UserControllerTest extends AbstractIntegrationTest {
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class UserControllerTest {
 
     @InjectMocks
     private UserController userController;
 
+    @Mock
+    private UserService userService;
+
     @BeforeEach
-    void setUp() throws SQLException {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userController = new UserController(new UserService(new UserRepository()));
-        userController.loginUser("admin", "admin");
-
-
-        userController.registerUser(new User(1, "admin", "admin", "A", "B", Role.ADMIN, "0", "a@dmin"));
-        userController.registerUser(new User(2, "manager", "manager", "B", "A", Role.MANAGER, "0", "a@dmin"));
     }
 
     @Test
-    void testAddUser() throws SQLException {
-        User user = new User(3, "abc", "cde", "B", "A", Role.CLIENT, "0", "a@dmin");
-        userController.registerUser(user);
-        assertThat(userController.getUsersForTests()).contains(user);
+    public void testRegisterUser() throws SQLException {
+        UserDTO userDTO = new UserDTO();
+        ResponseEntity<User> response = userController.registerUser(userDTO);
+
+        assertEquals(200, response.getStatusCodeValue());
+        verify(userService).registerUser(userDTO);
     }
 
     @Test
-    void testRemoveUser() {
-        User user = userController.getUserByUsername("admin");
-        userController.deleteUser(user.getUsername());
-        assertThat(userController.getUsersForTests()).doesNotContain(user);
-    }
-    @Test
-    void testGetUserByUsername() {
-        User result = userController.getUserByUsername("admin");
-        assertThat(result).isNotNull();
-        assertThat(result.getUsername()).isEqualTo("admin");
+    public void testGetUsers() {
+        when(userService.getUsers()).thenReturn(Collections.singletonList("User1"));
+
+        ResponseEntity<List<String>> response = userController.getUsers();
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
     }
 
     @Test
-    void testUpdateUserRole() {
-        User user = userController.getUserByUsername("admin");
-        userController.updateUserRole(user.getUsername(), Role.MANAGER);
-        assertThat(user.getRole()).isEqualTo(Role.MANAGER);
+    public void testDeleteUser() {
+        doNothing().when(userService).deleteUser("username");
+
+        ResponseEntity<Void> response = userController.deleteUser("username");
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(userService).deleteUser("username");
     }
+
 }

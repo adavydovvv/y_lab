@@ -1,57 +1,49 @@
-package ru.ylab.model;
+package ru.ylab.dto;
+
+import jakarta.validation.constraints.NotNull;
+import ru.ylab.model.Car;
+import ru.ylab.model.OrderStatus;
+import ru.ylab.model.User;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
-public class Order {
-    private int orderId;
+public class OrderDTO {
+    private int id;
+
+    @NotNull(message = "Customer is mandatory")
     private User customer;
+
+    @NotNull(message = "Car ID is mandatory")
     private Car car;
+
     private OrderStatus status;
     private double price;
+    private String descriptionOfTheService;
     private Date date;
 
-    private String descriptionOfTheService;
-
-    public Order(){}
-    public Order(int orderId, User customer, Car car, OrderStatus status, Date date) {
-        this.orderId = orderId;
-        this.customer = customer;
-        this.car = car;
-        this.status = status;
-        this.date = date;
-    }
-    public Order(int orderId, User customer, Car car, OrderStatus status, double price, String descriptionOfTheService, Date date) {
-        this.orderId = orderId;
-        this.customer = customer;
-        this.car = car;
-        this.status = status;
-        this.price = price;
-        this.descriptionOfTheService = descriptionOfTheService;
-        this.date = date;
+    public int getId() {
+        return id;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
+    @NotNull(message = "Customer is mandatory")
     public User getCustomer() {
         return customer;
     }
 
-    public void setCustomer(User customer) {
+    public void setCustomer(@NotNull(message = "Customer is mandatory") User customer) {
         this.customer = customer;
     }
 
+    @NotNull(message = "Car is mandatory")
     public Car getCar() {
         return car;
     }
 
-    public void setCar(Car car) {
+    public void setCar(@NotNull(message = "Car is mandatory") Car car) {
         this.car = car;
     }
 
@@ -86,5 +78,4 @@ public class Order {
     public void setDate(Date date) {
         this.date = date;
     }
-
 }

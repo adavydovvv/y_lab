@@ -1,100 +1,55 @@
 package ru.ylab.out.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ru.ylab.model.*;
 
-
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class OrderRepository {
 
-    private UserRepository userRepository = new UserRepository();
-    private CarRepository carRepository = new CarRepository();
+    private final JdbcTemplate jdbcTemplate;
+    private final UserRepository userRepository;
+    private final CarRepository carRepository;
 
-    public void addOrder(Order order) throws SQLException {
+    @Autowired
+    public OrderRepository(JdbcTemplate jdbcTemplate, UserRepository userRepository, CarRepository carRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.userRepository = userRepository;
+        this.carRepository = carRepository;
+    }
 
+    public void addOrder(Order order) {
         String sql = "INSERT INTO carshop.order (id, customerId, carId, status, price, date, descriptionOfTheService) " +
                 "VALUES (nextval('public.order_id_seq'), ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, order.getCustomer().getUserId());
-            stmt.setInt(2, order.getCar().getId());
-            stmt.setString(3, order.getStatus().toString());
-            stmt.setDouble(4, order.getPrice());
-            stmt.setDate(5, order.getDate());
-            stmt.setString(6, order.getDescriptionOfTheService());
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Error when adding an order: " + e.getMessage());
-        }
-
+        jdbcTemplate.update(sql, order.getCustomer().getUserId(), order.getCar().getId(),
+                order.getStatus().toString(), order.getPrice(), order.getDate(), order.getDescriptionOfTheService());
     }
 
     public List<Order> getOrders() {
-        List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM carshop.order";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Order order = new Order(rs.getInt("id"), userRepository.getUserById(rs.getInt("customerid")), carRepository.getCarById(rs.getInt("carid")), OrderStatus.valueOf(rs.getString("status")), rs.getDouble("price"), rs.getString("descriptionOfTheService"), rs.getDate("date"));
-                orders.add(order);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
-
-        return orders;
+        return jdbcTemplate.query(sql, this::mapRowToOrder);
     }
 
     public void changeOrderStatus(Order order, OrderStatus status) {
         String sql = "UPDATE carshop.order SET status = ? WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, status.toString());
-            stmt.setInt(2, order.getOrderId());
-
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated == 0) {
-                System.out.println("Order not found or no changes made");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
+        jdbcTemplate.update(sql, status.toString(), order.getOrderId());
     }
 
     public void deleteOrder(Order order) {
         String sql = "DELETE FROM carshop.order WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, order.getOrderId());
-            stmt.executeUpdate();
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
+        jdbcTemplate.update(sql, order.getOrderId());
     }
 
     public Order getOrderById(int id) {
-        return getOrders().stream()
-                .filter(order -> order.getOrderId() == id)
-                .findFirst()
-                .orElse(null);
+        String sql = "SELECT * FROM carshop.order WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, this::mapRowToOrder);
     }
 
     public List<Order> filterOrdersByCar(Car car) {
@@ -115,14 +70,25 @@ public class OrderRepository {
                 .toList();
     }
 
-
     public List<Order> filterOrdersByDate(LocalDate date) {
         return getOrders().stream()
-                .filter(order -> order.getDate().equals(date))
+                .filter(order -> order.getDate().toLocalDate().equals(date))
                 .toList();
     }
 
     public int getLastOrderId() {
         return getOrders().size();
+    }
+
+    private Order mapRowToOrder(ResultSet rs, int rowNum) throws SQLException {
+        return new Order(
+                rs.getInt("id"),
+                userRepository.getUserById(rs.getInt("customerid")),
+                carRepository.getCarById(rs.getInt("carid")),
+                OrderStatus.valueOf(rs.getString("status")),
+                rs.getDouble("price"),
+                rs.getString("descriptionOfTheService"),
+                rs.getDate("date")
+        );
     }
 }

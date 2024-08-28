@@ -18,8 +18,6 @@ public class AuditRepository {
             stmt.setTimestamp(1, Timestamp.valueOf(auditLog.getTimestamp()));
             stmt.setInt(2, auditLog.getUser().getUserId());
             stmt.setString(3, auditLog.getAction());
-
-
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error when adding a log: " + e.getMessage());

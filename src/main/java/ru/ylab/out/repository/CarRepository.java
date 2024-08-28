@@ -1,170 +1,106 @@
 package ru.ylab.out.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ru.ylab.model.Car;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class CarRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public CarRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void add(Car car) {
         String sql = "INSERT INTO carshop.car (id, brand, model, year, price, color, condition, number_of_owners, horsepower, engine_capacity, engine_type, car_available) " +
                 "VALUES (nextval('public.car_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, car.getBrand());
-            stmt.setString(2, car.getModel());
-            stmt.setInt(3, car.getYear());
-            stmt.setInt(4, car.getPrice());
-            stmt.setString(5, car.getColor());
-            stmt.setString(6, car.getCondition());
-            stmt.setInt(7, car.getNumber_of_owners());
-            stmt.setInt(8, car.getHorsepower());
-            stmt.setDouble(9, car.getEngine_capacity());
-            stmt.setString(10, car.getEngine_type());
-            stmt.setBoolean(11, car.isCar_available());
-
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Error when adding a car: " + e.getMessage());
-        }
+        jdbcTemplate.update(sql, car.getBrand(), car.getModel(), car.getYear(), car.getPrice(), car.getColor(),
+                car.getCondition(), car.getNumber_of_owners(), car.getHorsepower(), car.getEngine_capacity(),
+                car.getEngine_type(), car.isCar_available());
     }
 
-    public void updateCarPrice(Car car, int price){
+    public void updateCarPrice(Car car, int price) {
         String sql = "UPDATE carshop.car SET price = ? WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, price);
-            stmt.setInt(2, car.getId());
-
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Car price updated to " + price);
-            }
-            else {
-                System.out.println("Car price not updated");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
+        jdbcTemplate.update(sql, price, car.getId());
     }
 
-    public void updateCarIsAvailable(Car car, boolean isAvailable){
+    public void updateCarIsAvailable(Car car, boolean isAvailable) {
         String sql = "UPDATE carshop.car SET car_available = ? WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setBoolean(1, isAvailable);
-            stmt.setInt(2, car.getId());
-
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Car available status changed to " + isAvailable);
-            }
-            else {
-                System.out.println("Car available status not updated");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
+        jdbcTemplate.update(sql, isAvailable, car.getId());
     }
 
     public void removeCar(Car car) {
         String sql = "DELETE FROM carshop.car WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, car.getId());
-            stmt.executeUpdate();
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
+        jdbcTemplate.update(sql, car.getId());
     }
 
     public List<Car> getCars() {
-        List<Car> cars = new ArrayList<>();
         String sql = "SELECT * FROM carshop.car";
-
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5438/carshop","admin", "ylab");
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Car car = new Car(rs.getInt("id"), rs.getString("brand"), rs.getString("model"), rs.getInt("year"), rs.getInt("price"), rs.getString("color"), rs.getString("condition"), rs.getInt("number_of_owners"), rs.getInt("horsepower"), rs.getInt("engine_capacity"), rs.getString("engine_type"), rs.getBoolean("car_available"));
-                cars.add(car);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Database error occurred");
-        }
-
-        return cars;
+        return jdbcTemplate.query(sql, this::mapRowToCar);
     }
 
     public List<Car> filterCarsByBrand(String brand) {
-        return getCars().stream()
-                .filter(cars -> cars.getBrand().equals(brand))
-                .toList();
+        String sql = "SELECT * FROM carshop.car WHERE brand = ?";
+        return jdbcTemplate.query(sql, new Object[]{brand}, this::mapRowToCar);
     }
 
-
     public List<Car> filterCarsByModel(String model) {
-        return getCars().stream()
-                .filter(cars -> cars.getBrand().equals(model))
-                .toList();
-
+        String sql = "SELECT * FROM carshop.car WHERE model = ?";
+        return jdbcTemplate.query(sql, new Object[]{model}, this::mapRowToCar);
     }
 
     public List<Car> filterCarsByYear(int year) {
-        return getCars().stream()
-                .filter(cars -> cars.getYear() == year)
-                .toList();
-
+        String sql = "SELECT * FROM carshop.car WHERE year = ?";
+        return jdbcTemplate.query(sql, new Object[]{year}, this::mapRowToCar);
     }
 
     public List<Car> filterCarsByPrice(int price) {
-        return getCars().stream()
-                .filter(cars -> cars.getPrice() == price)
-                .toList();
-
+        String sql = "SELECT * FROM carshop.car WHERE price = ?";
+        return jdbcTemplate.query(sql, new Object[]{price}, this::mapRowToCar);
     }
 
     public List<Car> filterCarsByCondition(String condition) {
-        return getCars().stream()
-                .filter(cars -> cars.getCondition().equals(condition))
-                .toList();
+        String sql = "SELECT * FROM carshop.car WHERE condition = ?";
+        return jdbcTemplate.query(sql, new Object[]{condition}, this::mapRowToCar);
     }
 
-    public List<Car> filterCarsByEngineType(String engine_type) {
-        return getCars().stream()
-                .filter(cars -> cars.getEngine_type().equals(engine_type))
-                .toList();
+    public List<Car> filterCarsByEngineType(String engineType) {
+        String sql = "SELECT * FROM carshop.car WHERE engine_type = ?";
+        return jdbcTemplate.query(sql, new Object[]{engineType}, this::mapRowToCar);
     }
 
-    public int getLastCarId(){
-        return getCars().size();
+    public int getLastCarId() {
+        String sql = "SELECT COUNT(*) FROM carshop.car";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     public Car getCarById(int id) {
-        for (Car car : getCars()) {
-            if (car.getId() == id) {
-                return car;
-            }
-        }
-        return null;
+        String sql = "SELECT * FROM carshop.car WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, this::mapRowToCar);
+    }
+
+    private Car mapRowToCar(ResultSet rs, int rowNum) throws SQLException {
+        return new Car(
+                rs.getInt("id"),
+                rs.getString("brand"),
+                rs.getString("model"),
+                rs.getInt("year"),
+                rs.getInt("price"),
+                rs.getString("color"),
+                rs.getString("condition"),
+                rs.getInt("number_of_owners"),
+                rs.getInt("horsepower"),
+                rs.getDouble("engine_capacity"),
+                rs.getString("engine_type"),
+                rs.getBoolean("car_available")
+        );
     }
 }
-

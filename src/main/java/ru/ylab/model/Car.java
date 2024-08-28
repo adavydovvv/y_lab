@@ -14,6 +14,9 @@ public class Car {
     private String engine_type;
     private boolean car_available;
 
+    public Car(){
+
+    }
     public Car(int id, String brand, String model, int year, int price, String color, String condition, int number_of_owners, int horsepower, double engine_capacity, String engine_type) {
         this.id = id;
         this.brand = brand;
