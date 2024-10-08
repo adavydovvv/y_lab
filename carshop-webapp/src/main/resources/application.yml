@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5438/carshop
+    username: admin
+    password: ylab
+    driver-class-name: org.postgresql.Driver
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog.xml
