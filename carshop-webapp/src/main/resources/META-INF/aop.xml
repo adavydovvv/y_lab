@@ -1,0 +1,8 @@
+<aspectj>
+    <weaver>
+        <include within="ru.ylab..*"/>
+    </weaver>
+    <aspects>
+        <aspect>ru.ylab.aspect.AuditAspect</aspect>
+    </aspects>
+</aspectj>
