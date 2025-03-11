@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: carshop
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5438:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ylab
+      POSTGRES_DB: carshop
